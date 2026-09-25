@@ -1,24 +1,29 @@
 import type { Operation, Parameter, ParameterSchema } from "./spec.js";
 
 export const DEFAULT_API_BASE = "https://data.dydt.ai/v1";
+export const DEFAULT_WS_URL = "wss://data.dydt.ai/ws";
 
-const TRUSTED_API_HOST = /(^|\.)dydt\.ai$/;
+const TRUSTED_HOST = /(^|\.)dydt\.ai$/;
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
 
 export type ParamValues = Record<string, string[]>;
 
 export class UsageError extends Error {}
 
-export function apiBase(): string {
-  const configured = process.env.DYDT_API_BASE?.trim();
-  if (!configured) return DEFAULT_API_BASE;
+function trustedUrl(envName: string, fallback: string, secureProtocol: string): string {
+  const configured = process.env[envName]?.trim();
+  if (!configured) return fallback;
   const url = new URL(configured);
   const trusted =
-    (url.protocol === "https:" && TRUSTED_API_HOST.test(url.hostname)) ||
+    (url.protocol === secureProtocol && TRUSTED_HOST.test(url.hostname)) ||
     LOCAL_HOSTS.has(url.hostname);
-  if (!trusted) throw new UsageError("DYDT_API_BASE must be an https dydt.ai host or localhost");
+  if (!trusted)
+    throw new UsageError(`${envName} must be a ${secureProtocol}// dydt.ai host or localhost`);
   return configured.replace(/\/$/, "");
 }
+
+export const apiBase = (): string => trustedUrl("DYDT_API_BASE", DEFAULT_API_BASE, "https:");
+export const wsUrl = (): string => trustedUrl("DYDT_WS_URL", DEFAULT_WS_URL, "wss:");
 
 function isArrayParam(param: Parameter): boolean {
   return param.schema.type === "array";
@@ -61,28 +66,34 @@ function splitValues(param: Parameter, values: string[]): string[] {
   return values.flatMap((value) => value.split(",")).map((value) => value.trim()).filter(Boolean);
 }
 
-export function buildUrl(base: string, operation: Operation, input: ParamValues): string {
-  const known = new Set(operation.parameters.map((param) => param.name));
+export function rejectUnknown(params: Parameter[], input: ParamValues, command: string): void {
+  const known = new Set(params.map((param) => param.name));
   const unknown = Object.keys(input).filter((name) => !known.has(name));
-  if (unknown.length > 0)
-    throw new UsageError(
-      `unknown option ${unknown.map((name) => `--${name}`).join(", ")} for ${operation.command}. Run: dydt help ${operation.command}`,
-    );
+  if (unknown.length === 0) return;
+  throw new UsageError(
+    `unknown option ${unknown.map((name) => `--${name}`).join(", ")} for ${command}. Run: dydt help ${command}`,
+  );
+}
 
+export function validatedValues(param: Parameter, input: ParamValues, command: string): string[] {
+  const values = splitValues(param, input[param.name] ?? []);
+  if (values.length === 0 && param.required)
+    throw new UsageError(`--${param.name} is required for ${command}`);
+  if (values.length > 1 && !isArrayParam(param)) throw new UsageError(`--${param.name} takes one value`);
+  for (const value of values) {
+    const problem = checkValue(param, value);
+    if (problem) throw new UsageError(problem);
+  }
+  return values;
+}
+
+export function buildUrl(base: string, operation: Operation, input: ParamValues): string {
+  rejectUnknown(operation.parameters, input, operation.command);
   let path = operation.path;
   const query = new URLSearchParams();
   for (const param of operation.parameters) {
-    const values = splitValues(param, input[param.name] ?? []);
-    if (values.length === 0) {
-      if (param.required) throw new UsageError(`--${param.name} is required for ${operation.command}`);
-      continue;
-    }
-    if (values.length > 1 && !isArrayParam(param))
-      throw new UsageError(`--${param.name} takes one value`);
-    for (const value of values) {
-      const problem = checkValue(param, value);
-      if (problem) throw new UsageError(problem);
-    }
+    const values = validatedValues(param, input, operation.command);
+    if (values.length === 0) continue;
     if (param.in === "path") {
       path = path.replace(`{${param.name}}`, encodeURIComponent(values[0] ?? ""));
       continue;

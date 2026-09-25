@@ -1,6 +1,6 @@
 # dydt skills: agent guide
 
-This package gives an agent read-only access to dydt's Solana market and wallet data through the `dydt` CLI. Every command is a GET against `https://data.dydt.ai/v1`. Nothing here signs transactions, holds wallet keys, or places trades.
+This package gives an agent read-only access to dydt's Solana market and wallet data through the `dydt` CLI: REST commands against `https://data.dydt.ai/v1` and bounded live streams from `wss://data.dydt.ai/ws`. Nothing here signs transactions, holds wallet keys, or places trades. Each skill in `skills/` is self-contained and repeats the rules below, so it works when installed on its own.
 
 ## Rules for every skill
 
@@ -26,6 +26,8 @@ This package gives an agent read-only access to dydt's Solana market and wallet 
 
 | The user wants | Skill |
 |---|---|
+| To install or connect dydt, or a dydt command fails | `dydt-setup` |
+| A market brief or daily summary | `dydt-brief` |
 | Facts about one token: details, supply, authorities, holders, pools, bonding curve | `dydt-token` |
 | A risk read on one token before they decide anything | `dydt-token-check` |
 | Price history, volume, trades, or who is trading a token | `dydt-market` |
@@ -34,5 +36,6 @@ This package gives an agent read-only access to dydt's Solana market and wallet 
 | What KOLs, smart money, or VCs are buying; lists of labeled wallets | `dydt-smart-money` |
 | dydt token signals and their history | `dydt-signals` |
 | A token creator's track record | `dydt-dev-check` |
+| To monitor something live for a while | `dydt-watch` |
 
-Multi-step guides live in `docs/workflows/`: `token-research.md`, `smart-money-brief.md`, `wallet-review.md`.
+Multi-step guides live next to the skills that use them: `skills/dydt-token-check/references/token-research.md`, `skills/dydt-smart-money/references/smart-money-brief.md`, `skills/dydt-wallet/references/wallet-review.md`.

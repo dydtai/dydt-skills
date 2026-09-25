@@ -6,9 +6,11 @@ import test from "node:test";
 
 import { parseArgs } from "../dist/args.js";
 import { readApiKey, saveApiKey } from "../dist/config.js";
-import { apiBase, buildUrl, DEFAULT_API_BASE, UsageError } from "../dist/request.js";
+import { apiBase, buildUrl, DEFAULT_API_BASE, DEFAULT_WS_URL, UsageError, wsUrl } from "../dist/request.js";
 import { FILTERED, sanitize } from "../dist/sanitize.js";
 import { commandName, operationsOf } from "../dist/spec.js";
+import { streamsOf } from "../dist/streams.js";
+import { buildPayload } from "../dist/watch.js";
 
 const spec = JSON.parse(await readFile(new URL("../spec/openapi.json", import.meta.url), "utf8"));
 const operations = operationsOf(spec);
@@ -111,4 +113,39 @@ test("the saved key is private to the user and read back", async () => {
   process.env.DYDT_API_KEY = "from_env";
   assert.equal(await readApiKey(), "from_env");
   delete process.env.DYDT_API_KEY;
+});
+
+const streams = streamsOf(JSON.parse(await readFile(new URL("../spec/asyncapi.json", import.meta.url), "utf8")));
+const stream = (id) => streams.find((candidate) => candidate.id === id);
+
+test("streams come from the AsyncAPI spec", () => {
+  assert.ok(stream("trades"));
+  assert.ok(stream("wallet_activity"));
+  assert.deepEqual(stream("trades").fields.map((field) => [field.name, field.required]), [["poolId", true]]);
+});
+
+test("stream payloads are typed from the spec and validated locally", () => {
+  assert.deepEqual(buildPayload(stream("wallet_activity"), { wallets: [`${WALLET},${WALLET}`] }), {
+    wallets: [WALLET, WALLET],
+  });
+  assert.deepEqual(buildPayload(stream("prices"), { poolId: [WALLET], timeframe: ["1m"] }), {
+    poolId: WALLET,
+    timeframe: "1m",
+  });
+  assert.deepEqual(buildPayload(stream("token_signals"), {}), {});
+  assert.throws(() => buildPayload(stream("prices"), { poolId: [WALLET] }), /--timeframe is required/);
+  assert.throws(() => buildPayload(stream("prices"), { poolId: [WALLET], timeframe: ["2m"] }), /one of/);
+  assert.throws(() => buildPayload(stream("trades"), { poolId: [WALLET], nope: ["1"] }), /unknown option --nope/);
+});
+
+test("the stream host is pinned like the API host", () => {
+  delete process.env.DYDT_WS_URL;
+  assert.equal(wsUrl(), DEFAULT_WS_URL);
+  process.env.DYDT_WS_URL = "wss://prod.dydt.ai/ws";
+  assert.equal(wsUrl(), "wss://prod.dydt.ai/ws");
+  for (const hostile of ["wss://evil.example/ws", "ws://data.dydt.ai/ws"]) {
+    process.env.DYDT_WS_URL = hostile;
+    assert.throws(() => wsUrl(), UsageError, hostile);
+  }
+  delete process.env.DYDT_WS_URL;
 });

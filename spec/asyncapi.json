@@ -1,0 +1,3524 @@
+{
+  "asyncapi": "3.1.0",
+  "info": {
+    "title": "dydt Realtime Market Data",
+    "version": "1.0.0",
+    "description": "One multiplexed JSON WebSocket. Authenticate with `Authorization: Bearer <key>` on connect, or send {\"type\":\"auth\",\"key\":\"<key>\"} as the first frame (within 5 s). Then send subscribe/unsubscribe frames naming a stream and {\"type\":\"ping\"} every 15 s. Close codes: 4401 invalid key, 4402 paid plan required (Free is REST only), 4429 connection limit or monthly message allowance used. Every data message counts toward the monthly allowance; chart_lines, markers, wallet_signals, token_signals and x_posts need the Pro or Scale plan. Events are not replayed after a disconnect."
+  },
+  "defaultContentType": "application/json",
+  "servers": {
+    "production": {
+      "host": "data.dydt.ai",
+      "pathname": "/ws",
+      "protocol": "wss"
+    }
+  },
+  "channels": {
+    "market": {
+      "address": "/ws",
+      "messages": {
+        "subscribe_prices": {
+          "$ref": "#/components/messages/subscribe_prices"
+        },
+        "event_prices": {
+          "$ref": "#/components/messages/event_prices"
+        },
+        "subscribe_trades": {
+          "$ref": "#/components/messages/subscribe_trades"
+        },
+        "event_trades": {
+          "$ref": "#/components/messages/event_trades"
+        },
+        "subscribe_real_time_token_metrics": {
+          "$ref": "#/components/messages/subscribe_real_time_token_metrics"
+        },
+        "event_real_time_token_metrics": {
+          "$ref": "#/components/messages/event_real_time_token_metrics"
+        },
+        "subscribe_chart_lines": {
+          "$ref": "#/components/messages/subscribe_chart_lines"
+        },
+        "event_chart_lines": {
+          "$ref": "#/components/messages/event_chart_lines"
+        },
+        "subscribe_markers": {
+          "$ref": "#/components/messages/subscribe_markers"
+        },
+        "event_markers": {
+          "$ref": "#/components/messages/event_markers"
+        },
+        "subscribe_token_ranking": {
+          "$ref": "#/components/messages/subscribe_token_ranking"
+        },
+        "event_token_ranking": {
+          "$ref": "#/components/messages/event_token_ranking"
+        },
+        "subscribe_wallet_activity": {
+          "$ref": "#/components/messages/subscribe_wallet_activity"
+        },
+        "event_wallet_activity": {
+          "$ref": "#/components/messages/event_wallet_activity"
+        },
+        "subscribe_wallet_signals": {
+          "$ref": "#/components/messages/subscribe_wallet_signals"
+        },
+        "event_wallet_signals": {
+          "$ref": "#/components/messages/event_wallet_signals"
+        },
+        "subscribe_token_signals": {
+          "$ref": "#/components/messages/subscribe_token_signals"
+        },
+        "event_token_signals": {
+          "$ref": "#/components/messages/event_token_signals"
+        },
+        "subscribe_token_meta_data": {
+          "$ref": "#/components/messages/subscribe_token_meta_data"
+        },
+        "event_token_meta_data": {
+          "$ref": "#/components/messages/event_token_meta_data"
+        },
+        "subscribe_x_posts": {
+          "$ref": "#/components/messages/subscribe_x_posts"
+        },
+        "event_x_posts": {
+          "$ref": "#/components/messages/event_x_posts"
+        },
+        "auth": {
+          "$ref": "#/components/messages/auth"
+        },
+        "ping": {
+          "$ref": "#/components/messages/ping"
+        },
+        "pong": {
+          "$ref": "#/components/messages/pong"
+        }
+      }
+    }
+  },
+  "operations": {
+    "subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/market"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/market/messages/auth"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_prices"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_trades"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_real_time_token_metrics"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_chart_lines"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_markers"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_token_ranking"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_wallet_activity"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_wallet_signals"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_token_signals"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_token_meta_data"
+        },
+        {
+          "$ref": "#/channels/market/messages/subscribe_x_posts"
+        },
+        {
+          "$ref": "#/channels/market/messages/ping"
+        }
+      ]
+    },
+    "receive": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/market"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/market/messages/event_prices"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_trades"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_real_time_token_metrics"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_chart_lines"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_markers"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_token_ranking"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_wallet_activity"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_wallet_signals"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_token_signals"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_token_meta_data"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_x_posts"
+        },
+        {
+          "$ref": "#/channels/market/messages/pong"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "subscribe_prices": {
+        "name": "subscribe_prices",
+        "title": "Subscribe: Prices & candles",
+        "summary": "Keep a pool chart current with price and candle updates.",
+        "description": "Send a unique subSessionId per subscription and ignore candle events whose subSessionId does not match. Set lastSeq and lastSyncTs to resume after a reconnect; null starts fresh.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "prices"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "poolId",
+                "timeframe"
+              ],
+              "properties": {
+                "poolId": {
+                  "type": "string",
+                  "description": "Pool address to watch."
+                },
+                "timeframe": {
+                  "type": "string",
+                  "description": "Candle interval.",
+                  "enum": [
+                    "1s",
+                    "15s",
+                    "1m",
+                    "15m",
+                    "1h",
+                    "6h",
+                    "1d"
+                  ]
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Quote currency for candle values.",
+                  "enum": [
+                    "usd",
+                    "native"
+                  ]
+                },
+                "chartMode": {
+                  "type": "string",
+                  "description": "Return price or market-cap candles.",
+                  "enum": [
+                    "price",
+                    "mc"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_prices": {
+        "name": "event_prices",
+        "title": "Event: Prices & candles",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "seq",
+            "poolId",
+            "timeframe",
+            "subject",
+            "candles",
+            "chartMode",
+            "currency"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always prices."
+            },
+            "seq": {
+              "type": "integer",
+              "description": "Sequence number; resume with lastSeq after a reconnect."
+            },
+            "poolId": {
+              "type": "string",
+              "description": "Pool address."
+            },
+            "timeframe": {
+              "type": "string",
+              "description": "Candle interval."
+            },
+            "subject": {
+              "type": "string",
+              "description": "Internal routing subject; ignore it."
+            },
+            "candles": {
+              "type": "object",
+              "required": [
+                "startTs",
+                "open_quote",
+                "open_usd",
+                "high_quote",
+                "high_usd",
+                "low_quote",
+                "low_usd",
+                "close_quote",
+                "close_usd",
+                "market_cap_quote_open",
+                "market_cap_usd_open",
+                "market_cap_quote_high",
+                "market_cap_usd_high",
+                "market_cap_quote_low",
+                "market_cap_usd_low",
+                "market_cap_quote_close",
+                "market_cap_usd_close",
+                "volume_quote",
+                "volume_usd"
+              ],
+              "properties": {
+                "startTs": {
+                  "type": "integer",
+                  "description": "Candle start in Unix milliseconds."
+                },
+                "open_quote": {
+                  "type": "number",
+                  "description": "Price open in the quote asset."
+                },
+                "open_usd": {
+                  "type": "number",
+                  "description": "Price open in USD."
+                },
+                "high_quote": {
+                  "type": "number",
+                  "description": "Price high in the quote asset."
+                },
+                "high_usd": {
+                  "type": "number",
+                  "description": "Price high in USD."
+                },
+                "low_quote": {
+                  "type": "number",
+                  "description": "Price low in the quote asset."
+                },
+                "low_usd": {
+                  "type": "number",
+                  "description": "Price low in USD."
+                },
+                "close_quote": {
+                  "type": "number",
+                  "description": "Price close in the quote asset."
+                },
+                "close_usd": {
+                  "type": "number",
+                  "description": "Price close in USD."
+                },
+                "market_cap_quote_open": {
+                  "type": "number",
+                  "description": "Market cap open in the quote asset."
+                },
+                "market_cap_usd_open": {
+                  "type": "number",
+                  "description": "Market cap open in USD."
+                },
+                "market_cap_quote_high": {
+                  "type": "number",
+                  "description": "Market cap high in the quote asset."
+                },
+                "market_cap_usd_high": {
+                  "type": "number",
+                  "description": "Market cap high in USD."
+                },
+                "market_cap_quote_low": {
+                  "type": "number",
+                  "description": "Market cap low in the quote asset."
+                },
+                "market_cap_usd_low": {
+                  "type": "number",
+                  "description": "Market cap low in USD."
+                },
+                "market_cap_quote_close": {
+                  "type": "number",
+                  "description": "Market cap close in the quote asset."
+                },
+                "market_cap_usd_close": {
+                  "type": "number",
+                  "description": "Market cap close in USD."
+                },
+                "volume_quote": {
+                  "type": "number",
+                  "description": "Volume in the quote asset."
+                },
+                "volume_usd": {
+                  "type": "number",
+                  "description": "Volume in USD."
+                }
+              },
+              "description": "The current candle, updated in place until it closes."
+            },
+            "chartMode": {
+              "type": "string",
+              "description": "price or mc, as subscribed."
+            },
+            "currency": {
+              "type": "string",
+              "description": "usd or quote, as subscribed."
+            },
+            "subSessionId": {
+              "type": "string",
+              "description": "Echo of the subSessionId you sent."
+            }
+          },
+          "description": "Price events are flat: fields sit at the top level, not under data."
+        }
+      },
+      "subscribe_trades": {
+        "name": "subscribe_trades",
+        "title": "Subscribe: Trades",
+        "summary": "Follow buy and sell events as they arrive for a pool.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "trades"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "poolId"
+              ],
+              "properties": {
+                "poolId": {
+                  "type": "string",
+                  "description": "Pool address to watch."
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_trades": {
+        "name": "event_trades",
+        "title": "Event: Trades",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always trades."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "trade_id",
+                "user_pubkey",
+                "base_mint",
+                "trade_type",
+                "base_amount",
+                "created_at",
+                "txn_hash",
+                "quote_mint",
+                "quote_amount",
+                "market_cap",
+                "global_labels"
+              ],
+              "properties": {
+                "trade_id": {
+                  "type": "string",
+                  "description": "Trade id."
+                },
+                "user_pubkey": {
+                  "type": "string",
+                  "description": "Wallet that traded."
+                },
+                "base_mint": {
+                  "type": "string",
+                  "description": "Token mint address."
+                },
+                "trade_type": {
+                  "type": "string",
+                  "description": "buy or sell."
+                },
+                "base_amount": {
+                  "type": "number",
+                  "description": "Tokens traded, in whole tokens."
+                },
+                "created_at": {
+                  "type": "integer",
+                  "description": "Block time in Unix milliseconds."
+                },
+                "txn_hash": {
+                  "type": "string",
+                  "description": "Transaction signature."
+                },
+                "quote_mint": {
+                  "type": "string",
+                  "description": "Mint of the quote asset."
+                },
+                "quote_amount": {
+                  "$ref": "#/components/schemas/ValuePair",
+                  "description": "Quote asset paid or received."
+                },
+                "market_cap": {
+                  "$ref": "#/components/schemas/ValuePair",
+                  "description": "Market cap at the trade price."
+                },
+                "global_labels": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "dydt labels on the trader, for example kol."
+                }
+              },
+              "description": "Event payload."
+            }
+          }
+        }
+      },
+      "subscribe_real_time_token_metrics": {
+        "name": "subscribe_real_time_token_metrics",
+        "title": "Subscribe: Live pool metrics",
+        "summary": "Keep a pool’s live market metrics current between HTTP snapshots.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "real_time_token_metrics"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "poolIds"
+              ],
+              "properties": {
+                "poolIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Comma-separated pool addresses to watch, up to 100."
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_real_time_token_metrics": {
+        "name": "event_real_time_token_metrics",
+        "title": "Event: Live pool metrics",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "feed",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always real_time_token_metrics."
+            },
+            "feed": {
+              "type": "string",
+              "description": "Pool address the update is for."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "meta",
+                "snapshot",
+                "global",
+                "windowed"
+              ],
+              "properties": {
+                "meta": {
+                  "type": "object",
+                  "required": [
+                    "pool_id",
+                    "mint",
+                    "quote_mint",
+                    "pool_type",
+                    "slot",
+                    "txn_index",
+                    "ix_index"
+                  ],
+                  "properties": {
+                    "pool_id": {
+                      "type": "string",
+                      "description": "Pool address."
+                    },
+                    "mint": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Token mint address."
+                    },
+                    "quote_mint": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Quote asset mint."
+                    },
+                    "pool_type": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Pool model code."
+                    },
+                    "slot": {
+                      "type": "integer",
+                      "description": "Slot of the last trade included."
+                    },
+                    "txn_index": {
+                      "type": "integer",
+                      "description": "Transaction index of that trade."
+                    },
+                    "ix_index": {
+                      "type": "integer",
+                      "description": "Instruction index of that trade."
+                    }
+                  },
+                  "description": "Which pool and trade the update reflects."
+                },
+                "snapshot": {
+                  "type": "object",
+                  "required": [
+                    "price",
+                    "mcap",
+                    "liq",
+                    "bonding_curve_progress"
+                  ],
+                  "properties": {
+                    "price": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "Latest price per token."
+                    },
+                    "mcap": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "Market cap."
+                    },
+                    "liq": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "Pool liquidity."
+                    },
+                    "bonding_curve_progress": {
+                      "type": "number",
+                      "description": "Bonding curve completion, 0 to 100; 0 after migration."
+                    }
+                  },
+                  "description": "Current state."
+                },
+                "global": {
+                  "type": "object",
+                  "required": [
+                    "volume",
+                    "volume_buy",
+                    "volume_sell",
+                    "txn_count",
+                    "buy_count",
+                    "sell_count",
+                    "ath_mcap",
+                    "first_trade_time",
+                    "launch_price",
+                    "launch_price_usd",
+                    "price_pct_total",
+                    "holder_count",
+                    "buy_holder_count",
+                    "sell_holder_count",
+                    "lp_burned_pct",
+                    "total_supply",
+                    "circulating_supply",
+                    "holders_total",
+                    "dev_pct",
+                    "sniper_pct",
+                    "bundle_pct",
+                    "bundler_count",
+                    "top10_pct",
+                    "mint_revoked",
+                    "freeze_revoked",
+                    "dex_paid",
+                    "bcurve_gain_5m"
+                  ],
+                  "properties": {
+                    "volume": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "All-time traded volume."
+                    },
+                    "volume_buy": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "All-time buy volume."
+                    },
+                    "volume_sell": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "All-time sell volume."
+                    },
+                    "txn_count": {
+                      "type": "integer",
+                      "description": "All-time trades."
+                    },
+                    "buy_count": {
+                      "type": "integer",
+                      "description": "All-time buys."
+                    },
+                    "sell_count": {
+                      "type": "integer",
+                      "description": "All-time sells."
+                    },
+                    "ath_mcap": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "Highest market cap seen."
+                    },
+                    "first_trade_time": {
+                      "type": "integer",
+                      "description": "First trade in Unix milliseconds; 0 when unknown."
+                    },
+                    "launch_price": {
+                      "type": "number",
+                      "description": "First traded price in the quote asset; 0 when unknown."
+                    },
+                    "launch_price_usd": {
+                      "type": "number",
+                      "description": "First traded price in USD; 0 when unknown."
+                    },
+                    "price_pct_total": {
+                      "$ref": "#/components/schemas/ValuePair",
+                      "description": "Price change since launch, in percent."
+                    },
+                    "holder_count": {
+                      "type": "integer",
+                      "description": "Distinct wallets that have traded the token (approximate)."
+                    },
+                    "buy_holder_count": {
+                      "type": "integer",
+                      "description": "Distinct wallets that have bought (approximate)."
+                    },
+                    "sell_holder_count": {
+                      "type": "integer",
+                      "description": "Distinct wallets that have sold (approximate)."
+                    },
+                    "lp_burned_pct": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of LP burned and locked, 0 to 1."
+                    },
+                    "total_supply": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Total supply in whole tokens."
+                    },
+                    "circulating_supply": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Circulating supply in whole tokens."
+                    },
+                    "holders_total": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Wallets holding the token right now."
+                    },
+                    "dev_pct": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of supply held by the developer, 0 to 100."
+                    },
+                    "sniper_pct": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of supply held by sniper wallets, 0 to 100."
+                    },
+                    "bundle_pct": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of supply held by bundled launch buyers, 0 to 100."
+                    },
+                    "bundler_count": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Wallets that bought in bundled launch transactions."
+                    },
+                    "top10_pct": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of supply held by the 10 largest holders, 0 to 100."
+                    },
+                    "mint_revoked": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "1 when the mint authority is revoked, 0 when not."
+                    },
+                    "freeze_revoked": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "1 when the freeze authority is revoked, 0 when not."
+                    },
+                    "dex_paid": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "1 when a DEX Screener profile was paid for, 0 when not."
+                    },
+                    "bcurve_gain_5m": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Bonding curve progress gained in the last 5 minutes."
+                    }
+                  },
+                  "description": "All-time aggregates and holder structure."
+                },
+                "windowed": {
+                  "type": "object",
+                  "required": [
+                    "t",
+                    "pp",
+                    "v",
+                    "vb",
+                    "vs",
+                    "tc",
+                    "bc",
+                    "sc",
+                    "m",
+                    "bm",
+                    "sm"
+                  ],
+                  "properties": {
+                    "t": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Windows present, in order, from 1m, 5m, 1h, 6h, 24h."
+                    },
+                    "pp": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {}
+                      },
+                      "description": "Price change in percent. One [quote, usd] pair per window, in the order of t."
+                    },
+                    "v": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {}
+                      },
+                      "description": "Volume. One [quote, usd] pair per window, in the order of t."
+                    },
+                    "vb": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {}
+                      },
+                      "description": "Buy volume. One [quote, usd] pair per window, in the order of t."
+                    },
+                    "vs": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {}
+                      },
+                      "description": "Sell volume. One [quote, usd] pair per window, in the order of t."
+                    },
+                    "tc": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "description": "Trades. One count per window, in the order of t."
+                    },
+                    "bc": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "description": "Buys. One count per window, in the order of t."
+                    },
+                    "sc": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "description": "Sells. One count per window, in the order of t."
+                    },
+                    "m": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "description": "Distinct traders. One count per window, in the order of t."
+                    },
+                    "bm": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "description": "Distinct buyers. One count per window, in the order of t."
+                    },
+                    "sm": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "description": "Distinct sellers. One count per window, in the order of t."
+                    }
+                  },
+                  "description": "Windowed metrics in compact columnar form."
+                },
+                "heat": {
+                  "type": "object",
+                  "required": [
+                    "absolute",
+                    "momentum",
+                    "direction",
+                    "drivers",
+                    "confidence"
+                  ],
+                  "properties": {
+                    "absolute": {
+                      "type": "integer",
+                      "description": "Overall activity score, 0 to 100."
+                    },
+                    "momentum": {
+                      "type": "integer",
+                      "description": "Recent surge in price, volume, and trades, 0 to 100."
+                    },
+                    "direction": {
+                      "type": "string",
+                      "description": "up or down, from the 5-minute price move."
+                    },
+                    "drivers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "What is driving momentum: price, volume, txns."
+                    },
+                    "confidence": {
+                      "type": "number",
+                      "description": "0 to 1; low for pools younger than a few minutes."
+                    }
+                  },
+                  "description": "How hot the pool is right now."
+                }
+              },
+              "description": "Full metrics for the pool."
+            }
+          },
+          "description": "Windowed metrics use a compact columnar form: t lists the windows, and every other array holds one entry per window at the same index. Money arrays hold [quote, usd] pairs."
+        }
+      },
+      "subscribe_chart_lines": {
+        "name": "subscribe_chart_lines",
+        "title": "Subscribe: Chart annotations",
+        "summary": "Update chart annotations associated with a pool and token.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "chart_lines"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "poolPubkey",
+                "baseMint"
+              ],
+              "properties": {
+                "poolPubkey": {
+                  "type": "string",
+                  "description": "Pool address."
+                },
+                "baseMint": {
+                  "type": "string",
+                  "description": "Token mint address."
+                },
+                "topHolders": {
+                  "type": "number",
+                  "description": "Include annotations for top holders."
+                },
+                "trackedWallets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Comma-separated wallet addresses to include."
+                },
+                "wallet": {
+                  "type": "string",
+                  "description": "Wallet address for wallet-specific annotations."
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_chart_lines": {
+        "name": "event_chart_lines",
+        "title": "Event: Chart annotations",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always chart_lines."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "poolPubkey",
+                "baseMint",
+                "lines"
+              ],
+              "properties": {
+                "poolPubkey": {
+                  "type": "string",
+                  "description": "Pool address."
+                },
+                "baseMint": {
+                  "type": "string",
+                  "description": "Token mint address."
+                },
+                "wallet": {
+                  "type": "string",
+                  "description": "Wallet the self_* lines belong to."
+                },
+                "lines": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "kind",
+                      "priceUsd",
+                      "priceQuote",
+                      "mcUsd",
+                      "mcQuote"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Line id; a later event with the same id replaces the line."
+                      },
+                      "kind": {
+                        "type": "string",
+                        "description": "ath, migration, dev_buy, dev_sell, top_buy, top_sell, kol_buy, tracked_buy, self_buy, or self_sell."
+                      },
+                      "label": {
+                        "type": "string",
+                        "description": "Short label for the line."
+                      },
+                      "supplyPct": {
+                        "type": "number",
+                        "description": "Share of supply behind the line, 0 to 100."
+                      },
+                      "walletCount": {
+                        "type": "integer",
+                        "description": "Wallets behind the line."
+                      },
+                      "ts": {
+                        "type": "integer",
+                        "description": "When the level was set, Unix milliseconds."
+                      },
+                      "priceUsd": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "description": "Price level in USD."
+                      },
+                      "priceQuote": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "description": "Price level in the quote asset."
+                      },
+                      "mcUsd": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "description": "Market cap level in USD."
+                      },
+                      "mcQuote": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "description": "Market cap level in the quote asset."
+                      }
+                    }
+                  },
+                  "description": "Horizontal levels to draw on the chart."
+                }
+              },
+              "description": "Event payload."
+            }
+          },
+          "description": "Each event carries the full set of lines; replace what you have."
+        }
+      },
+      "subscribe_markers": {
+        "name": "subscribe_markers",
+        "title": "Subscribe: Token markers",
+        "summary": "Show new or changed chart markers for a token.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "markers"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "token"
+              ],
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "description": "Token mint address."
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_markers": {
+        "name": "event_markers",
+        "title": "Event: Token markers",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always markers."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "kind"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "description": "event adds a marker, remove deletes one, wallet is a marked trade."
+                },
+                "mark": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "time",
+                    "type",
+                    "source",
+                    "detail"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Marker id."
+                    },
+                    "time": {
+                      "type": "integer",
+                      "description": "Marker time in Unix seconds."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Marker type, for example callout, signal, or a market event."
+                    },
+                    "source": {
+                      "type": "string",
+                      "description": "Where the marker came from."
+                    },
+                    "detail": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "additionalProperties": true,
+                      "description": "Type-specific detail, for example the caller and thesis of a callout."
+                    }
+                  },
+                  "description": "The marker. kind event only."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Id of the marker to delete. kind remove only."
+                },
+                "trade": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "time",
+                    "pool_id",
+                    "wallet",
+                    "labels",
+                    "trade_type",
+                    "amount_usd",
+                    "market_cap_usd",
+                    "price_usd",
+                    "token_amount",
+                    "amount_quote",
+                    "price_quote",
+                    "market_cap_quote"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Trade id."
+                    },
+                    "time": {
+                      "type": "integer",
+                      "description": "Trade time in Unix seconds."
+                    },
+                    "pool_id": {
+                      "type": "string",
+                      "description": "Pool traded."
+                    },
+                    "wallet": {
+                      "type": "string",
+                      "description": "Wallet that traded."
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "label"
+                        ],
+                        "properties": {
+                          "label": {
+                            "type": "string",
+                            "description": "Label name."
+                          },
+                          "meta": {
+                            "type": [
+                              "object",
+                              "null"
+                            ],
+                            "additionalProperties": true,
+                            "description": "Extra detail for the label."
+                          }
+                        }
+                      },
+                      "description": "Why the wallet is marked, for example dev or kol."
+                    },
+                    "trade_type": {
+                      "type": "string",
+                      "description": "buy or sell."
+                    },
+                    "amount_usd": {
+                      "type": "number",
+                      "description": "Trade value in USD."
+                    },
+                    "market_cap_usd": {
+                      "type": "number",
+                      "description": "Market cap in USD at the trade."
+                    },
+                    "price_usd": {
+                      "type": "number",
+                      "description": "Price in USD."
+                    },
+                    "token_amount": {
+                      "type": "number",
+                      "description": "Tokens traded, in whole tokens."
+                    },
+                    "amount_quote": {
+                      "type": "number",
+                      "description": "Trade value in the quote asset."
+                    },
+                    "price_quote": {
+                      "type": "number",
+                      "description": "Price in the quote asset."
+                    },
+                    "market_cap_quote": {
+                      "type": "number",
+                      "description": "Market cap in the quote asset."
+                    }
+                  },
+                  "description": "A trade by a labelled wallet. kind wallet only."
+                }
+              },
+              "description": "Event payload."
+            }
+          }
+        }
+      },
+      "subscribe_token_ranking": {
+        "name": "subscribe_token_ranking",
+        "title": "Subscribe: Token rankings",
+        "summary": "Maintain a ranked token feed for a chosen time window.",
+        "description": "One subscription also delivers feed_transition and rank_window events for feeds that publish them. Branch on the stream field of each event.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "token_ranking"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "feed",
+                "timeframe"
+              ],
+              "properties": {
+                "feed": {
+                  "type": "string",
+                  "description": "Ranking feed to receive.",
+                  "enum": [
+                    "new_pair",
+                    "popular",
+                    "top_gainers",
+                    "almost_bonded",
+                    "migrated",
+                    "stocks"
+                  ]
+                },
+                "timeframe": {
+                  "type": "string",
+                  "description": "Ranking time window.",
+                  "enum": [
+                    "1m",
+                    "5m",
+                    "1h",
+                    "6h",
+                    "24h"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_token_ranking": {
+        "name": "event_token_ranking",
+        "title": "Event: Token rankings",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always token_ranking."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "feed",
+                "timeframe",
+                "rankings",
+                "updated_at"
+              ],
+              "properties": {
+                "feed": {
+                  "type": "string",
+                  "description": "Feed name, as subscribed."
+                },
+                "timeframe": {
+                  "type": "string",
+                  "description": "Ranking window, as subscribed."
+                },
+                "rankings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "pool_id",
+                      "rank",
+                      "signal_value",
+                      "entered_ts",
+                      "token",
+                      "metrics"
+                    ],
+                    "properties": {
+                      "pool_id": {
+                        "type": "string",
+                        "description": "Pool address."
+                      },
+                      "rank": {
+                        "type": "integer",
+                        "description": "Position in the feed, from 0 or 1 depending on the feed."
+                      },
+                      "signal_value": {
+                        "type": "number",
+                        "description": "Score the feed ranks by; its meaning depends on the feed."
+                      },
+                      "entered_ts": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "description": "Unix milliseconds when the pool entered this feed."
+                      },
+                      "token": {
+                        "type": "object",
+                        "required": [
+                          "mintAddress",
+                          "symbol",
+                          "name",
+                          "image"
+                        ],
+                        "properties": {
+                          "mintAddress": {
+                            "type": "string",
+                            "description": "Token mint address."
+                          },
+                          "symbol": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Token symbol. Not unique across tokens."
+                          },
+                          "name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Token name."
+                          },
+                          "image": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Image path on the dydt CDN; prefix it with the CDN base URL."
+                          },
+                          "decimals": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "description": "Token decimals."
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "Token description from its metadata."
+                          },
+                          "features": {
+                            "type": "object",
+                            "required": [
+                              "isMayhemMode",
+                              "mayhemEndsAt",
+                              "creatorFees"
+                            ],
+                            "properties": {
+                              "isMayhemMode": {
+                                "type": "boolean",
+                                "description": "Whether the token launched in pump.fun Mayhem mode."
+                              },
+                              "mayhemEndsAt": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "ISO time when Mayhem mode ends; null outside Mayhem mode."
+                              },
+                              "creatorFees": {
+                                "type": "object",
+                                "required": [
+                                  "destination"
+                                ],
+                                "properties": {
+                                  "destination": {
+                                    "type": "string",
+                                    "description": "Fee recipient, for example creator."
+                                  }
+                                },
+                                "description": "Where creator trading fees are routed."
+                              }
+                            },
+                            "description": "Launch features of the token."
+                          },
+                          "launchedAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ISO time the token was created."
+                          },
+                          "socialLinks": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Platform name to URL, for example twitter, website, telegram. Only known links are present."
+                          }
+                        },
+                        "description": "Token summary."
+                      },
+                      "metrics": {
+                        "type": "object",
+                        "required": [
+                          "snapshot",
+                          "global",
+                          "windowed"
+                        ],
+                        "properties": {
+                          "snapshot": {
+                            "type": "object",
+                            "required": [
+                              "price",
+                              "mcap",
+                              "liq",
+                              "bonding_curve_progress"
+                            ],
+                            "properties": {
+                              "price": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "Latest price per token."
+                              },
+                              "mcap": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "Market cap."
+                              },
+                              "liq": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "Pool liquidity."
+                              },
+                              "bonding_curve_progress": {
+                                "type": "number",
+                                "description": "Bonding curve completion, 0 to 100; 0 after migration."
+                              }
+                            },
+                            "description": "Current state."
+                          },
+                          "global": {
+                            "type": "object",
+                            "required": [
+                              "volume",
+                              "volume_buy",
+                              "volume_sell",
+                              "txn_count",
+                              "buy_count",
+                              "sell_count",
+                              "ath_mcap",
+                              "first_trade_time",
+                              "launch_price",
+                              "launch_price_usd",
+                              "price_pct_total",
+                              "holder_count",
+                              "buy_holder_count",
+                              "sell_holder_count",
+                              "lp_burned_pct",
+                              "total_supply",
+                              "circulating_supply",
+                              "holders_total",
+                              "dev_pct",
+                              "sniper_pct",
+                              "bundle_pct",
+                              "bundler_count",
+                              "top10_pct",
+                              "mint_revoked",
+                              "freeze_revoked",
+                              "dex_paid",
+                              "bcurve_gain_5m"
+                            ],
+                            "properties": {
+                              "volume": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "All-time traded volume."
+                              },
+                              "volume_buy": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "All-time buy volume."
+                              },
+                              "volume_sell": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "All-time sell volume."
+                              },
+                              "txn_count": {
+                                "type": "integer",
+                                "description": "All-time trades."
+                              },
+                              "buy_count": {
+                                "type": "integer",
+                                "description": "All-time buys."
+                              },
+                              "sell_count": {
+                                "type": "integer",
+                                "description": "All-time sells."
+                              },
+                              "ath_mcap": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "Highest market cap seen."
+                              },
+                              "first_trade_time": {
+                                "type": "integer",
+                                "description": "First trade in Unix milliseconds; 0 when unknown."
+                              },
+                              "launch_price": {
+                                "type": "number",
+                                "description": "First traded price in the quote asset; 0 when unknown."
+                              },
+                              "launch_price_usd": {
+                                "type": "number",
+                                "description": "First traded price in USD; 0 when unknown."
+                              },
+                              "price_pct_total": {
+                                "$ref": "#/components/schemas/ValuePair",
+                                "description": "Price change since launch, in percent."
+                              },
+                              "holder_count": {
+                                "type": "integer",
+                                "description": "Distinct wallets that have traded the token (approximate)."
+                              },
+                              "buy_holder_count": {
+                                "type": "integer",
+                                "description": "Distinct wallets that have bought (approximate)."
+                              },
+                              "sell_holder_count": {
+                                "type": "integer",
+                                "description": "Distinct wallets that have sold (approximate)."
+                              },
+                              "lp_burned_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of LP burned and locked, 0 to 1."
+                              },
+                              "total_supply": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Total supply in whole tokens."
+                              },
+                              "circulating_supply": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Circulating supply in whole tokens."
+                              },
+                              "holders_total": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "Wallets holding the token right now."
+                              },
+                              "dev_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by the developer, 0 to 100."
+                              },
+                              "sniper_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by sniper wallets, 0 to 100."
+                              },
+                              "bundle_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by bundled launch buyers, 0 to 100."
+                              },
+                              "bundler_count": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "Wallets that bought in bundled launch transactions."
+                              },
+                              "top10_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by the 10 largest holders, 0 to 100."
+                              },
+                              "mint_revoked": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "1 when the mint authority is revoked, 0 when not."
+                              },
+                              "freeze_revoked": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "1 when the freeze authority is revoked, 0 when not."
+                              },
+                              "dex_paid": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "1 when a DEX Screener profile was paid for, 0 when not."
+                              },
+                              "bcurve_gain_5m": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Bonding curve progress gained in the last 5 minutes."
+                              }
+                            },
+                            "description": "All-time aggregates and holder structure."
+                          },
+                          "windowed": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "object",
+                              "required": [
+                                "price_pct",
+                                "volume",
+                                "volume_buy",
+                                "volume_sell",
+                                "txn_count",
+                                "buy_count",
+                                "sell_count",
+                                "makers",
+                                "buy_makers",
+                                "sell_makers"
+                              ],
+                              "properties": {
+                                "price_pct": {
+                                  "$ref": "#/components/schemas/ValuePair",
+                                  "description": "Price change over the window, in percent."
+                                },
+                                "volume": {
+                                  "$ref": "#/components/schemas/ValuePair",
+                                  "description": "Traded volume over the window."
+                                },
+                                "volume_buy": {
+                                  "$ref": "#/components/schemas/ValuePair",
+                                  "description": "Buy volume over the window."
+                                },
+                                "volume_sell": {
+                                  "$ref": "#/components/schemas/ValuePair",
+                                  "description": "Sell volume over the window."
+                                },
+                                "txn_count": {
+                                  "type": "integer",
+                                  "description": "Trades over the window."
+                                },
+                                "buy_count": {
+                                  "type": "integer",
+                                  "description": "Buys over the window."
+                                },
+                                "sell_count": {
+                                  "type": "integer",
+                                  "description": "Sells over the window."
+                                },
+                                "makers": {
+                                  "type": "integer",
+                                  "description": "Distinct wallets that traded over the window."
+                                },
+                                "buy_makers": {
+                                  "type": "integer",
+                                  "description": "Distinct buyers over the window."
+                                },
+                                "sell_makers": {
+                                  "type": "integer",
+                                  "description": "Distinct sellers over the window."
+                                }
+                              }
+                            },
+                            "description": "Window name (1m, 5m, 1h, 6h, 24h) to that window’s metrics."
+                          }
+                        },
+                        "description": "Market metrics. Holder and concentration fields are null until dydt has enough holder data to trust them."
+                      },
+                      "pool_info": {
+                        "type": [
+                          "object",
+                          "null"
+                        ],
+                        "required": [
+                          "poolId",
+                          "network",
+                          "baseTokenMint",
+                          "quoteTokenMint",
+                          "dex",
+                          "poolType",
+                          "feeRate",
+                          "initialBaseAmount",
+                          "initialQuoteAmount",
+                          "lpMint",
+                          "baseVault",
+                          "lpIssued",
+                          "openTime",
+                          "createdAt",
+                          "isInverted",
+                          "baseLiquidity",
+                          "quoteLiquidity",
+                          "bondingCurveProgress",
+                          "liqSol",
+                          "liqUsd",
+                          "lpBurnedPct",
+                          "lpSupply",
+                          "lpMintedTotal",
+                          "lpBurnedTotal",
+                          "lpBurnedLocked",
+                          "lpBurnedWithdrawn",
+                          "lpReconciledAt"
+                        ],
+                        "properties": {
+                          "poolId": {
+                            "type": "string",
+                            "description": "Pool address."
+                          },
+                          "network": {
+                            "type": "string",
+                            "description": "Network name, mainnet."
+                          },
+                          "baseTokenMint": {
+                            "type": "string",
+                            "description": "Mint of the traded token."
+                          },
+                          "quoteTokenMint": {
+                            "type": "string",
+                            "description": "Mint of the asset it trades against, usually wrapped SOL."
+                          },
+                          "dex": {
+                            "type": "string",
+                            "description": "Venue, for example pumpfun, pumpAmm, raydium, meteora."
+                          },
+                          "poolType": {
+                            "type": "string",
+                            "description": "Pool model: BONDING_CURVE, AMM, CLMM, or DLMM."
+                          },
+                          "feeRate": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Pool trading fee when known."
+                          },
+                          "initialBaseAmount": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Base tokens deposited at pool creation, in raw units."
+                          },
+                          "initialQuoteAmount": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Quote tokens deposited at pool creation, in raw units."
+                          },
+                          "lpMint": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "LP token mint; null for bonding curves."
+                          },
+                          "baseVault": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Account holding the pool base tokens."
+                          },
+                          "lpIssued": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "LP tokens issued at creation, in raw units."
+                          },
+                          "openTime": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ISO time the pool opened for trading."
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "description": "ISO time dydt first saw the pool."
+                          },
+                          "migratedFrom": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Bonding curve pool this pool migrated from."
+                          },
+                          "migratedAt": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "description": "Migration time in Unix milliseconds."
+                          },
+                          "isInverted": {
+                            "type": "boolean",
+                            "description": "True when the pool stores the pair in reverse order."
+                          },
+                          "baseLiquidity": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Liquidity on the base side, in pool quote units."
+                          },
+                          "quoteLiquidity": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Liquidity on the quote side, in pool quote units."
+                          },
+                          "bondingCurveProgress": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Bonding curve completion, 0 to 100."
+                          },
+                          "liqSol": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Total liquidity in SOL."
+                          },
+                          "liqUsd": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Total liquidity in USD."
+                          },
+                          "lpBurnedPct": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Share of LP tokens burned and still locked, 0 to 1."
+                          },
+                          "lpSupply": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "LP tokens currently in circulation, in raw units."
+                          },
+                          "lpMintedTotal": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "All LP tokens ever minted, in raw units."
+                          },
+                          "lpBurnedTotal": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "All LP tokens ever burned, in raw units."
+                          },
+                          "lpBurnedLocked": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Burned LP tokens still counted as locked, in raw units."
+                          },
+                          "lpBurnedWithdrawn": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Burned LP later withdrawn, in raw units."
+                          },
+                          "lpReconciledAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ISO time LP figures were last checked on chain."
+                          }
+                        },
+                        "description": "Pool record."
+                      }
+                    }
+                  },
+                  "description": "Ranked pools, best first."
+                },
+                "updated_at": {
+                  "type": "integer",
+                  "description": "When the feed was computed, in Unix milliseconds."
+                }
+              },
+              "description": "Event payload."
+            }
+          },
+          "description": "Each event is a full snapshot of the feed; replace what you have."
+        }
+      },
+      "subscribe_wallet_activity": {
+        "name": "subscribe_wallet_activity",
+        "title": "Subscribe: Wallet activity",
+        "summary": "Follow public trade and position activity for selected wallets.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "wallet_activity"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "wallets"
+              ],
+              "properties": {
+                "wallets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Comma-separated wallet addresses to watch."
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_wallet_activity": {
+        "name": "event_wallet_activity",
+        "title": "Event: Wallet activity",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always wallet_activity."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "trade_id",
+                "txn_hash",
+                "trader_wallet",
+                "base_mint",
+                "quote_mint",
+                "pool_pubkey",
+                "trade_type",
+                "position_action",
+                "amount_usd",
+                "amount_sol",
+                "mcap_at_trade_usd",
+                "mcap_at_trade_quote",
+                "realized_usd",
+                "realized_sol",
+                "realized_reliable",
+                "multiple",
+                "remaining_pct",
+                "created_at_ms",
+                "token_symbol",
+                "token_name",
+                "token_image",
+                "program_id",
+                "current_market_cap_usd",
+                "current_market_cap_quote",
+                "current_liquidity_usd",
+                "trader_stats",
+                "trader_day"
+              ],
+              "properties": {
+                "trade_id": {
+                  "type": "string",
+                  "description": "Trade id."
+                },
+                "txn_hash": {
+                  "type": "string",
+                  "description": "Transaction signature."
+                },
+                "trader_wallet": {
+                  "type": "string",
+                  "description": "Watched wallet that traded."
+                },
+                "base_mint": {
+                  "type": "string",
+                  "description": "Token mint address."
+                },
+                "quote_mint": {
+                  "type": "string",
+                  "description": "Quote asset mint."
+                },
+                "pool_pubkey": {
+                  "type": "string",
+                  "description": "Pool traded."
+                },
+                "trade_type": {
+                  "type": "string",
+                  "description": "buy or sell."
+                },
+                "position_action": {
+                  "type": "string",
+                  "description": "What the trade did to the position: new, add, reentry, partial, full_exit, or unknown."
+                },
+                "amount_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Trade value in USD."
+                },
+                "amount_sol": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Trade value in SOL."
+                },
+                "mcap_at_trade_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Market cap in USD at the trade."
+                },
+                "mcap_at_trade_quote": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Market cap in the quote asset at the trade."
+                },
+                "realized_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Profit realized by this sell, in USD."
+                },
+                "realized_sol": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Profit realized by this sell, in SOL."
+                },
+                "realized_reliable": {
+                  "type": "boolean",
+                  "description": "False when part of the position was bought outside tracked trades."
+                },
+                "multiple": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Exit value over cost for this sell."
+                },
+                "remaining_pct": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Share of the position still held after the trade, 0 to 100."
+                },
+                "created_at_ms": {
+                  "type": "integer",
+                  "description": "Block time in Unix milliseconds."
+                },
+                "token_symbol": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token symbol."
+                },
+                "token_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token name."
+                },
+                "token_image": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Image path on the dydt CDN."
+                },
+                "program_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Program that owns the pool."
+                },
+                "current_market_cap_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Market cap in USD now."
+                },
+                "current_market_cap_quote": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Market cap in the quote asset now."
+                },
+                "current_liquidity_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Liquidity in USD now."
+                },
+                "trader_stats": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "is_bot",
+                    "labels",
+                    "tokens",
+                    "trades",
+                    "win_rate",
+                    "behaviour",
+                    "median_multiple",
+                    "avg_hold_seconds"
+                  ],
+                  "properties": {
+                    "is_bot": {
+                      "type": "boolean",
+                      "description": "True when the wallet trades like a bot."
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "dydt labels on the wallet, for example kol."
+                    },
+                    "tokens": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Tokens traded."
+                    },
+                    "trades": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Trades made."
+                    },
+                    "win_rate": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of closed positions in profit, 0 to 1."
+                    },
+                    "behaviour": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Trading style, for example sniper."
+                    },
+                    "median_multiple": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Median exit value over cost."
+                    },
+                    "avg_hold_seconds": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Average holding time in seconds."
+                    }
+                  },
+                  "description": "Long-run profile of the trader."
+                },
+                "trader_day": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "win_rate",
+                    "trades",
+                    "tokens",
+                    "realized_sol",
+                    "realized_usd",
+                    "hours"
+                  ],
+                  "properties": {
+                    "win_rate": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of closed positions in profit, 0 to 1."
+                    },
+                    "trades": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Trades made."
+                    },
+                    "tokens": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Tokens traded."
+                    },
+                    "realized_sol": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Realized profit in SOL."
+                    },
+                    "realized_usd": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Realized profit in USD."
+                    },
+                    "hours": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "pnl_sol",
+                          "pnl_usd",
+                          "trades"
+                        ],
+                        "properties": {
+                          "pnl_sol": {
+                            "type": "number",
+                            "description": "Realized profit in SOL that hour."
+                          },
+                          "pnl_usd": {
+                            "type": "number",
+                            "description": "Realized profit in USD that hour."
+                          },
+                          "trades": {
+                            "type": "integer",
+                            "description": "Trades that hour."
+                          }
+                        }
+                      },
+                      "description": "Hourly breakdown, oldest first."
+                    }
+                  },
+                  "description": "The trader’s last 24 hours."
+                }
+              },
+              "description": "Event payload."
+            }
+          },
+          "description": "One event per trade by a watched wallet."
+        }
+      },
+      "subscribe_wallet_signals": {
+        "name": "subscribe_wallet_signals",
+        "title": "Subscribe: Wallet signals",
+        "summary": "Watch public wallet signals and their retractions.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "wallet_signals"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {}
+            }
+          }
+        }
+      },
+      "event_wallet_signals": {
+        "name": "event_wallet_signals",
+        "title": "Event: Wallet signals",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always wallet_signals."
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "event_type": {
+                  "type": "string",
+                  "description": "Absent for a closed position; retract when a signal is withdrawn."
+                },
+                "signal_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Withdrawn signal ids. Retract events only."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Signal id."
+                },
+                "trader_wallet": {
+                  "type": "string",
+                  "description": "Wallet that closed the position."
+                },
+                "base_mint": {
+                  "type": "string",
+                  "description": "Token mint address."
+                },
+                "quote_mint": {
+                  "type": "string",
+                  "description": "Quote asset mint."
+                },
+                "pool_pubkey": {
+                  "type": "string",
+                  "description": "Pool traded."
+                },
+                "token_symbol": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token symbol."
+                },
+                "token_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token name."
+                },
+                "token_image": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Image path on the dydt CDN."
+                },
+                "program_id": {
+                  "type": "string",
+                  "description": "Program that owns the pool."
+                },
+                "current_liquidity_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Pool liquidity in USD now."
+                },
+                "current_market_cap_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Market cap in USD now."
+                },
+                "opened_at": {
+                  "type": "integer",
+                  "description": "Position opened, Unix milliseconds."
+                },
+                "closed_at": {
+                  "type": "integer",
+                  "description": "Position closed, Unix milliseconds."
+                },
+                "hold_seconds": {
+                  "type": "integer",
+                  "description": "Seconds between open and close."
+                },
+                "multiple": {
+                  "type": "number",
+                  "description": "Proceeds over cost; 2 means the position doubled."
+                },
+                "realized_usd": {
+                  "type": "number",
+                  "description": "Proceeds in USD."
+                },
+                "realized_sol": {
+                  "type": "number",
+                  "description": "Proceeds in SOL."
+                },
+                "invested_usd": {
+                  "type": "number",
+                  "description": "Cost in USD."
+                },
+                "invested_sol": {
+                  "type": "number",
+                  "description": "Cost in SOL."
+                },
+                "entry_price_usd": {
+                  "type": "number",
+                  "description": "Average entry price in USD."
+                },
+                "entry_price_sol": {
+                  "type": "number",
+                  "description": "Average entry price in SOL."
+                },
+                "entry_mcap_usd": {
+                  "type": "number",
+                  "description": "Market cap in USD at entry."
+                },
+                "entry_mcap_quote": {
+                  "type": "number",
+                  "description": "Market cap in the quote asset at entry."
+                },
+                "exit_price_usd": {
+                  "type": "number",
+                  "description": "Average exit price in USD."
+                },
+                "exit_price_sol": {
+                  "type": "number",
+                  "description": "Average exit price in SOL."
+                },
+                "exit_mcap_usd": {
+                  "type": "number",
+                  "description": "Market cap in USD at exit."
+                },
+                "exit_mcap_quote": {
+                  "type": "number",
+                  "description": "Market cap in the quote asset at exit."
+                },
+                "entry_liq_usd": {
+                  "type": "number",
+                  "description": "Liquidity in USD at entry."
+                },
+                "buys": {
+                  "type": "integer",
+                  "description": "Buys in the position."
+                },
+                "sells": {
+                  "type": "integer",
+                  "description": "Sells in the position."
+                },
+                "untracked_share": {
+                  "type": "number",
+                  "description": "Share of the position bought outside tracked trades, 0 to 1."
+                },
+                "divested_share": {
+                  "type": "number",
+                  "description": "Share of the position sold, 0 to 1."
+                },
+                "trader_stats": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "is_bot",
+                    "labels",
+                    "tokens",
+                    "trades",
+                    "win_rate",
+                    "behaviour",
+                    "median_multiple",
+                    "avg_hold_seconds"
+                  ],
+                  "properties": {
+                    "is_bot": {
+                      "type": "boolean",
+                      "description": "True when the wallet trades like a bot."
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "dydt labels on the wallet, for example kol."
+                    },
+                    "tokens": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Tokens traded."
+                    },
+                    "trades": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Trades made."
+                    },
+                    "win_rate": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of closed positions in profit, 0 to 1."
+                    },
+                    "behaviour": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Trading style, for example sniper."
+                    },
+                    "median_multiple": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Median exit value over cost."
+                    },
+                    "avg_hold_seconds": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Average holding time in seconds."
+                    }
+                  },
+                  "description": "Long-run profile of the trader."
+                },
+                "trader_day": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "win_rate",
+                    "trades",
+                    "tokens",
+                    "realized_sol",
+                    "realized_usd",
+                    "hours"
+                  ],
+                  "properties": {
+                    "win_rate": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Share of closed positions in profit, 0 to 1."
+                    },
+                    "trades": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Trades made."
+                    },
+                    "tokens": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Tokens traded."
+                    },
+                    "realized_sol": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Realized profit in SOL."
+                    },
+                    "realized_usd": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "description": "Realized profit in USD."
+                    },
+                    "hours": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "pnl_sol",
+                          "pnl_usd",
+                          "trades"
+                        ],
+                        "properties": {
+                          "pnl_sol": {
+                            "type": "number",
+                            "description": "Realized profit in SOL that hour."
+                          },
+                          "pnl_usd": {
+                            "type": "number",
+                            "description": "Realized profit in USD that hour."
+                          },
+                          "trades": {
+                            "type": "integer",
+                            "description": "Trades that hour."
+                          }
+                        }
+                      },
+                      "description": "Hourly breakdown, oldest first."
+                    }
+                  },
+                  "description": "The trader’s last 24 hours."
+                },
+                "enriched": {
+                  "type": "boolean",
+                  "description": "True once trader stats are attached."
+                },
+                "bonding_curve_progress": {
+                  "type": "number",
+                  "description": "Bonding curve completion at close, 0 to 100."
+                }
+              },
+              "description": "Event payload."
+            }
+          },
+          "description": "A closed position by a tracked trader, or a retract event withdrawing earlier signals."
+        }
+      },
+      "subscribe_token_signals": {
+        "name": "subscribe_token_signals",
+        "title": "Subscribe: Token signals",
+        "summary": "Track token signals through outcomes and retractions.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "token_signals"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {}
+            }
+          }
+        }
+      },
+      "event_token_signals": {
+        "name": "event_token_signals",
+        "title": "Event: Token signals",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always token_signals."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "event_type",
+                "signal_id",
+                "base_mint",
+                "pool_pubkey",
+                "token_symbol",
+                "token_name",
+                "token_image"
+              ],
+              "properties": {
+                "event_type": {
+                  "type": "string",
+                  "description": "signal for a new alert, outcome for a later performance update."
+                },
+                "signal_id": {
+                  "type": "string",
+                  "description": "Signal id; outcome events refer back to it."
+                },
+                "base_mint": {
+                  "type": "string",
+                  "description": "Token mint address."
+                },
+                "pool_pubkey": {
+                  "type": "string",
+                  "description": "Pool the signal fired on."
+                },
+                "token_symbol": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token symbol."
+                },
+                "token_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token name."
+                },
+                "token_image": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Image path on the dydt CDN."
+                },
+                "dex": {
+                  "type": "string",
+                  "description": "Venue of the pool."
+                },
+                "tier": {
+                  "type": "string",
+                  "description": "Signal quality tier."
+                },
+                "signal_kind": {
+                  "type": "string",
+                  "description": "Primary detector that fired."
+                },
+                "kinds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Every detector that fired."
+                },
+                "confluence": {
+                  "type": "boolean",
+                  "description": "True when more than one detector agreed."
+                },
+                "pool_kind": {
+                  "type": "string",
+                  "description": "bonding_curve or amm."
+                },
+                "is_anchor": {
+                  "type": "boolean",
+                  "description": "True for the first signal on this token."
+                },
+                "fast_path": {
+                  "type": "boolean",
+                  "description": "True when two or more tier A wallets bought within seconds."
+                },
+                "triggered_at": {
+                  "type": "integer",
+                  "description": "Triggering trade, Unix milliseconds."
+                },
+                "detected_at": {
+                  "type": "integer",
+                  "description": "Detection time, Unix milliseconds."
+                },
+                "alert_index": {
+                  "type": "integer",
+                  "description": "Alert number within the signal, from 1."
+                },
+                "alert_mc_usd": {
+                  "type": "number",
+                  "description": "Market cap in USD at the alert."
+                },
+                "alert_price_usd": {
+                  "type": "number",
+                  "description": "Price in USD at the alert."
+                },
+                "alert_liquidity_usd": {
+                  "type": "number",
+                  "description": "Liquidity in USD at the alert."
+                },
+                "alert_sol_price_usd": {
+                  "type": "number",
+                  "description": "SOL price in USD at the alert."
+                },
+                "alert_makers": {
+                  "type": "integer",
+                  "description": "Distinct traders at the alert."
+                },
+                "entities": {
+                  "type": "integer",
+                  "description": "Distinct buyer entities behind the signal."
+                },
+                "tier_a": {
+                  "type": "integer",
+                  "description": "Tier A wallets among them."
+                },
+                "tier_b": {
+                  "type": "integer",
+                  "description": "Tier B wallets among them."
+                },
+                "tier_c": {
+                  "type": "integer",
+                  "description": "Tier C wallets among them."
+                },
+                "cohort_buy_usd": {
+                  "type": "number",
+                  "description": "Combined buys in USD by those entities."
+                },
+                "buyer_burst": {
+                  "type": "number",
+                  "description": "Unique buyers in the detection window relative to the 5-minute rate."
+                },
+                "warnings": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Caveats about the signal, for example dev_share_unknown when the developer holding could not be measured."
+                },
+                "peak_mc_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Outcome events: highest market cap in USD since the signal."
+                },
+                "peak_at": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Outcome events: time of that peak, Unix milliseconds."
+                },
+                "multiple": {
+                  "type": "number",
+                  "description": "Outcome events: peak market cap over the alert market cap."
+                },
+                "died_at": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Outcome events: when the token stopped trading."
+                }
+              },
+              "description": "Event payload."
+            }
+          }
+        }
+      },
+      "subscribe_token_meta_data": {
+        "name": "subscribe_token_meta_data",
+        "title": "Subscribe: Token metadata",
+        "summary": "Refresh displayed token metadata when it changes.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "token_meta_data"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {}
+            }
+          }
+        }
+      },
+      "event_token_meta_data": {
+        "name": "event_token_meta_data",
+        "title": "Event: Token metadata",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always token_meta_data."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "mintAddress",
+                "network",
+                "symbol",
+                "name",
+                "image"
+              ],
+              "properties": {
+                "mintAddress": {
+                  "type": "string",
+                  "description": "Token mint address."
+                },
+                "network": {
+                  "type": "integer",
+                  "description": "Network id; 1 is Solana mainnet."
+                },
+                "symbol": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token symbol. Not unique across tokens."
+                },
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Token name."
+                },
+                "image": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Image path on the dydt CDN; prefix it with the CDN base URL."
+                },
+                "decimals": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Token decimals."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Token description from its metadata."
+                },
+                "features": {
+                  "type": "object",
+                  "required": [
+                    "isMayhemMode",
+                    "mayhemEndsAt",
+                    "creatorFees"
+                  ],
+                  "properties": {
+                    "isMayhemMode": {
+                      "type": "boolean",
+                      "description": "Whether the token launched in pump.fun Mayhem mode."
+                    },
+                    "mayhemEndsAt": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "ISO time when Mayhem mode ends; null outside Mayhem mode."
+                    },
+                    "creatorFees": {
+                      "type": "object",
+                      "required": [
+                        "destination"
+                      ],
+                      "properties": {
+                        "destination": {
+                          "type": "string",
+                          "description": "Fee recipient, for example creator."
+                        }
+                      },
+                      "description": "Where creator trading fees are routed."
+                    }
+                  },
+                  "description": "Launch features of the token."
+                },
+                "launchedAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "ISO time the token was created."
+                },
+                "socialLinks": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "description": "Platform name to URL, for example twitter, website, telegram. Only known links are present."
+                }
+              },
+              "description": "Event payload."
+            }
+          }
+        }
+      },
+      "subscribe_x_posts": {
+        "name": "subscribe_x_posts",
+        "title": "Subscribe: Social posts",
+        "summary": "Receive newly observed public posts associated with tokens.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "x_posts"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {}
+            }
+          }
+        }
+      },
+      "event_x_posts": {
+        "name": "event_x_posts",
+        "title": "Event: Social posts",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "type": "string",
+              "description": "Always x_posts."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "tweet_id",
+                "posted_at",
+                "author_handle",
+                "author_name",
+                "author_avatar_url",
+                "author_verified",
+                "kind",
+                "kind_label",
+                "text",
+                "reply_to_handle",
+                "reply_parent",
+                "quoted_tweet_id",
+                "quoted_handle",
+                "quoted_name",
+                "quoted_text",
+                "quoted_media",
+                "media",
+                "links",
+                "card",
+                "like_count",
+                "reply_count",
+                "repost_count",
+                "view_count",
+                "handle",
+                "handle_verified",
+                "feed_at",
+                "url"
+              ],
+              "properties": {
+                "tweet_id": {
+                  "type": "string",
+                  "description": "Post id."
+                },
+                "posted_at": {
+                  "type": "string",
+                  "description": "ISO time of the post."
+                },
+                "author_handle": {
+                  "type": "string",
+                  "description": "Author handle without @."
+                },
+                "author_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Author display name."
+                },
+                "author_avatar_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Author avatar URL."
+                },
+                "author_verified": {
+                  "type": "boolean",
+                  "description": "Whether the author is verified."
+                },
+                "kind": {
+                  "type": "integer",
+                  "description": "Post type: 1 post, 2 reply, 3 repost, 4 quote."
+                },
+                "kind_label": {
+                  "type": "string",
+                  "description": "POST, REPLY, REPOST, or QUOTE."
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Post text."
+                },
+                "reply_to_handle": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Handle replied to, for replies."
+                },
+                "reply_parent": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "description": "The post being replied to, when known."
+                },
+                "quoted_tweet_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Quoted post id, for quotes."
+                },
+                "quoted_handle": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Quoted author handle."
+                },
+                "quoted_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Quoted author name."
+                },
+                "quoted_text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Quoted post text."
+                },
+                "quoted_media": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": "object"
+                  },
+                  "description": "Media in the quoted post."
+                },
+                "media": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": "object"
+                  },
+                  "description": "Attached media."
+                },
+                "links": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": "object"
+                  },
+                  "description": "Links in the post."
+                },
+                "card": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "description": "Link preview card."
+                },
+                "like_count": {
+                  "type": "integer",
+                  "description": "Likes when captured."
+                },
+                "reply_count": {
+                  "type": "integer",
+                  "description": "Replies when captured."
+                },
+                "repost_count": {
+                  "type": "integer",
+                  "description": "Reposts when captured."
+                },
+                "view_count": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Views when captured."
+                },
+                "handle": {
+                  "type": "string",
+                  "description": "Tracked account that surfaced the post."
+                },
+                "handle_verified": {
+                  "type": "boolean",
+                  "description": "Whether that account is verified."
+                },
+                "feed_at": {
+                  "type": "string",
+                  "description": "ISO time the post entered the feed."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Link to the post on X."
+                }
+              },
+              "description": "Event payload."
+            }
+          }
+        }
+      },
+      "auth": {
+        "name": "auth",
+        "summary": "First frame when the key is not sent as a header.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "key"
+          ],
+          "properties": {
+            "type": {
+              "const": "auth"
+            },
+            "key": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ping": {
+        "name": "ping",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "ping"
+            }
+          }
+        }
+      },
+      "pong": {
+        "name": "pong",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "pong"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ValuePair": {
+        "type": "object",
+        "description": "quote is in the pool quote asset, usually SOL. Either side can be null.",
+        "required": [
+          "quote",
+          "usd"
+        ],
+        "properties": {
+          "quote": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "usd": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

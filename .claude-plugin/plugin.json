@@ -1,6 +1,6 @@
 {
   "name": "dydt",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "dydt Solana market and wallet data for agents: token lookup and risk checks, charts and trades, discovery feeds, wallet PnL, KOL and smart-money trades, and dydt signals. Read-only.",
   "author": { "name": "dydt", "url": "https://dydt.ai" },
   "homepage": "https://dydt.ai/developers/agents",
