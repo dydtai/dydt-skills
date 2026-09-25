@@ -1,6 +1,6 @@
 import type { ParamValues } from "./request.js";
 
-export const FLAGS = ["raw", "help"] as const;
+export const FLAGS = ["raw", "help", "version"] as const;
 export type Flag = (typeof FLAGS)[number];
 
 export interface ParsedArgs {

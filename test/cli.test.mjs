@@ -30,6 +30,7 @@ test("flags, repeated options, and key=value forms parse", () => {
   assert.deepEqual(parsed.params, { tiers: ["qualified", "high_conviction"] });
   assert.ok(parsed.flags.has("raw"));
   assert.throws(() => parseArgs(["search", "--q"]), /needs a value/);
+  assert.ok(parseArgs(["--version"]).flags.has("version"));
 });
 
 test("path parameters are substituted and query parameters appended", () => {

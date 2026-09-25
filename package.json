@@ -1,6 +1,6 @@
 {
   "name": "dydt-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "dydt Solana market and wallet data for AI agents: a CLI over the dydt Data API plus agent skills.",
   "license": "MIT",
   "type": "module",

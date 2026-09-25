@@ -143,7 +143,7 @@ async function runOperation(operation: Operation, args: ParsedArgs): Promise<num
 async function main(argv: readonly string[]): Promise<number> {
   const args = parseArgs(argv);
   const [command, target] = args.positionals;
-  if (command === "--version" || command === "version") {
+  if (args.flags.has("version") || command === "version") {
     process.stdout.write(`${CLI_VERSION}\n`);
     return 0;
   }

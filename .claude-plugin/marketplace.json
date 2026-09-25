@@ -6,7 +6,7 @@
       "name": "dydt",
       "source": "./",
       "description": "Read-only dydt Solana market and wallet data: tokens, risk checks, charts, discovery, wallets, KOL and smart-money trades, signals.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "data",
       "keywords": ["dydt", "solana", "wallet", "kol", "market-data"]
     }
