@@ -8189,7 +8189,7 @@
             "name": "start_time",
             "in": "query",
             "required": false,
-            "description": "Only trades at or after this time. Within the last 30 days. If omitted, the last 24 hours.",
+            "description": "Only trades at or after this time. Within the last 7 days. If omitted, the last 24 hours.",
             "schema": {
               "type": "integer",
               "format": "int64",

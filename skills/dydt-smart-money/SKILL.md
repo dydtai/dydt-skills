@@ -11,7 +11,7 @@ Read the rules in `AGENTS.md` first. Every command here needs the **Pro or Scale
 
 | Command | Use it for |
 |---|---|
-| `dydt labeled-trades --label <kol|smart|vc>` | Trades by labeled wallets, newest first. Default window 24h; `--start_time` up to 30 days back. Filter by `--side buy`, `--base_mint`, `--min_amount_usd`. |
+| `dydt labeled-trades --label <kol|smart|vc>` | Trades by labeled wallets, newest first. Default window 24h; `--start_time` up to 7 days back. Filter by `--side buy`, `--base_mint`, `--min_amount_usd`. |
 | `dydt labeled-wallets --label <label>` | Every wallet with a label, with public name and avatar for KOLs. Paged. |
 | `dydt leaderboard --scope kols --minutes <window> --order_by realised_pnl` | KOLs ranked by results. |
 | `dydt wallet-signals` | Closed positions by tracked wallets that beat the feed floor, best first, with trader stats. |
@@ -27,5 +27,6 @@ Read the rules in `AGENTS.md` first. Every command here needs the **Pro or Scale
 
 - Each labeled trade carries `wallet` and `labels`, then the same fields as `wallet-trades`: `trade_type`, `amount_usd`, `market_cap_usd` at the trade, and realised PnL on sells.
 - Labels are dydt's classification and refresh every minute; they can be wrong, and wallets can change hands. Present them as labels, not facts about people.
+- Not every label has wallets yet. `kol` is the main one. If `dydt labeled-wallets --label <label>` shows `total: 0`, tell the user dydt has no wallets under that label yet. Do not report that as "no activity".
 - A KOL buying is not a reason to buy: KOLs often sell into their followers. Always mention sells by the same wallets in the same token when you see them.
 - `wallet-signals` items include `multiple` (proceeds over cost), `hold_seconds`, and `trader_stats` (win rate, behaviour, labels). They describe trades that already closed.

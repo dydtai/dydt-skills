@@ -61,7 +61,7 @@ Output is the response `data` as JSON (`--raw` for one line). Errors print `{"er
 | `dydt-market` | Candles, pool metrics, trades, top traders, SOL price |
 | `dydt-discover` | New, popular, gaining, almost-bonded, migrated, and stock feeds |
 | `dydt-wallet` | Wallet PnL, positions, trades, daily PnL, leaderboard |
-| `dydt-smart-money` | KOL, smart-money, and VC trades; labeled wallet lists; wallet signals (Pro) |
+| `dydt-smart-money` | KOL trades, labeled wallet lists, KOL leaderboard, wallet signals (Pro) |
 | `dydt-signals` | dydt token signals and per-token history (Pro) |
 | `dydt-dev-check` | A creator's launch record |
 
