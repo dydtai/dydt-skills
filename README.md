@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/banner.png" alt="dydt CLI and agent skills for Solana market data" width="1280">
+
 # dydt CLI and agent skills
 
 **Solana memecoin market data, wallet PnL, KOL trades, and live streams for AI agents.**
