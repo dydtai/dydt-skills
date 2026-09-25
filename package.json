@@ -1,7 +1,7 @@
 {
   "name": "dydt-cli",
-  "version": "0.2.0",
-  "description": "dydt Solana market and wallet data for AI agents: a CLI over the dydt Data API plus agent skills.",
+  "version": "0.2.1",
+  "description": "dydt CLI and AI agent skills: Solana memecoin market data, token risk checks, wallet PnL, KOL trades, signals, and live streams for Claude Code, Cursor, Codex, and other agents. Read-only.",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -24,24 +24,37 @@
     "sync-rules": "node scripts/sync-rules.mjs"
   },
   "keywords": [
-    "dydt",
-    "solana",
-    "memecoin",
-    "market-data",
-    "wallet",
-    "kol",
+    "agent-skills",
     "ai-agent",
-    "skills",
     "claude-code",
-    "mcp"
+    "codex",
+    "crypto",
+    "cursor",
+    "defi",
+    "dydt",
+    "kol",
+    "kol-tracker",
+    "market-data",
+    "mcp",
+    "memecoin",
+    "pumpfun",
+    "rug-check",
+    "skills",
+    "solana",
+    "solana-api",
+    "wallet",
+    "wallet-pnl"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dydtai/dydt-skills"
   },
-  "homepage": "https://dydt.ai/developers/agents",
+  "homepage": "https://github.com/dydtai/dydt-skills#readme",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0"
+  },
+  "bugs": {
+    "url": "https://github.com/dydtai/dydt-skills/issues"
   }
 }

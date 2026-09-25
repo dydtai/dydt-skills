@@ -27,13 +27,21 @@ async function documentedFiles() {
   return files;
 }
 
+function commandLines(text) {
+  const inline = [...text.matchAll(/`(dydt [^`]*)`/g)].map((match) => match[1]);
+  const fenced = [...text.matchAll(/```bash\n([\s\S]*?)```/g)].flatMap((match) =>
+    match[1].split("\n").map((line) => line.replace(/#.*$/, "").trim()).filter((line) => line.startsWith("dydt ")),
+  );
+  return [...inline, ...fenced];
+}
+
 function invocations(text) {
-  return [...text.matchAll(/`dydt ([a-z][a-z-]*)((?: [^`]*)?)`/g)].map((match) => {
+  return commandLines(text).flatMap((line) => [...line.matchAll(/^dydt ([a-z][a-z-]*)((?: .*)?)$/g)]).map((match) => {
     const words = match[2].trim().split(/\s+/).filter(Boolean);
     return {
       command: match[1],
       target: words.slice(0, 1).find((word) => /^[a-z_]+$/.test(word)),
-      options: [...match[2].matchAll(/--([A-Za-z_-]+)/g)].map((option) => option[1]),
+      options: [...match[2].matchAll(/--([A-Za-z0-9_-]+)/g)].map((option) => option[1]),
     };
   });
 }
