@@ -1,0 +1,11 @@
+{
+  "name": "dydt",
+  "version": "0.1.0",
+  "description": "dydt Solana market and wallet data for agents: token lookup and risk checks, charts and trades, discovery feeds, wallet PnL, KOL and smart-money trades, and dydt signals. Read-only.",
+  "author": { "name": "dydt", "url": "https://dydt.ai" },
+  "homepage": "https://dydt.ai/developers/agents",
+  "repository": "https://github.com/dydtai/dydt-skills",
+  "license": "MIT",
+  "keywords": ["dydt", "solana", "memecoin", "wallet", "kol", "smart-money", "market-data"],
+  "skills": "./skills/"
+}

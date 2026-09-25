@@ -1,0 +1,14 @@
+{
+  "name": "dydt",
+  "owner": { "name": "dydt", "url": "https://dydt.ai" },
+  "plugins": [
+    {
+      "name": "dydt",
+      "source": "./",
+      "description": "Read-only dydt Solana market and wallet data: tokens, risk checks, charts, discovery, wallets, KOL and smart-money trades, signals.",
+      "version": "0.1.0",
+      "category": "data",
+      "keywords": ["dydt", "solana", "wallet", "kol", "market-data"]
+    }
+  ]
+}

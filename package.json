@@ -1,0 +1,47 @@
+{
+  "name": "dydt-cli",
+  "version": "0.1.0",
+  "description": "dydt Solana market and wallet data for AI agents: a CLI over the dydt Data API plus agent skills.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "dydt": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "spec",
+    "skills",
+    "docs",
+    "AGENTS.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "sync-spec": "node scripts/sync-spec.mjs",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "dydt",
+    "solana",
+    "memecoin",
+    "market-data",
+    "wallet",
+    "kol",
+    "ai-agent",
+    "skills",
+    "claude-code",
+    "mcp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dydtai/dydt-skills"
+  },
+  "homepage": "https://dydt.ai/developers/agents",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
