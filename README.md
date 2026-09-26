@@ -130,6 +130,7 @@ Start on Free. If you ask for something your plan does not include, your agent t
 |---|---|
 | `dydt: command not found` | Run step 1 again, then open a new terminal. Check `node --version` shows 22.4 or newer. |
 | `No API key` | Run `dydt config set <your-api-key>` with a key from [dydt.ai/developers/keys](https://dydt.ai/developers/keys). |
+| `unknown command` after updating | Version 0.3.0 renamed the commands. Update the skills too with `npx skills add dydtai/dydt-skills -g`, then restart the agent. See the [changelog](CHANGELOG.md). |
 | HTTP 401 | The key is mistyped or was deleted. Create a new one and save it again. |
 | HTTP 403 or code 4033 | Your plan does not include that data. Your agent says which plan does. |
 | HTTP 429 | Too many requests, or the monthly allowance is used up. Wait a minute or upgrade. |
