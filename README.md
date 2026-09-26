@@ -143,6 +143,8 @@ npm install -g dydt-cli@latest
 npx skills add dydtai/dydt-skills -g
 ```
 
+Always update both together. Version 0.3.0 renamed every command; the [changelog](CHANGELOG.md) lists the old and new names.
+
 ---
 
 ## For developers

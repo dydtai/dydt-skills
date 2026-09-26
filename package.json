@@ -15,7 +15,8 @@
     "dist",
     "spec",
     "skills",
-    "AGENTS.md"
+    "AGENTS.md",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=22.4"
