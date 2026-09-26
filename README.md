@@ -32,6 +32,8 @@ It is **read-only**: it cannot trade, move funds, or touch your wallet.
 
 ## Set it up in 4 steps
 
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/setup.png" alt="Setup in four steps: install dydt-cli, add the skills, save your API key, run dydt sol-price to check" width="1280">
+
 Run these in your terminal (Terminal on macOS, PowerShell on Windows, or the terminal panel in Cursor or VS Code).
 
 **1. Install the `dydt` command**
@@ -69,6 +71,8 @@ You should see something like `{"price_usd": 121.13}`. Restart your agent and as
 
 ## Things to ask
 
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/ask.png" alt="You ask whether a token is safe; the agent runs the dydt-token-check commands; you get findings marked red, caution, unknown, or ok" width="1280">
+
 ```
 Is <token address> safe? Give me the red flags.
 Find the real WIF token, not a copycat, and show its top holders.
@@ -83,6 +87,8 @@ Write me a morning brief of the Solana memecoin market.
 Copy a token or wallet address from its page on [dydt.ai](https://dydt.ai). If your agent answers without using dydt, start your question with *"Using dydt, …"*.
 
 ## What your agent can look up
+
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/skills.png" alt="The 11 dydt skills grouped by what they look up, with the plan each needs" width="1280">
 
 | Skill | Ask about | Plan |
 |---|---|---|
@@ -109,6 +115,8 @@ Copy a token or wallet address from its page on [dydt.ai](https://dydt.ai). If y
 Start on Free. If you ask for something your plan does not include, your agent tells you which plan does. Limits and prices are on the [pricing page](https://dydt.ai/developers/billing); pay in USDC or SOL.
 
 ## Safety
+
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/safety.png" alt="Your key and the dydt command stay on your computer, requests go only to data.dydt.ai, and your wallet, seed phrase, and signing are never involved" width="1280">
 
 - **Read-only.** There is no command that trades, transfers, or signs. dydt never asks for a seed phrase or private key; anyone who does is trying to steal from you.
 - **Your key stays with you.** It is stored on your computer (file mode 600) and sent only to dydt.
@@ -315,6 +323,8 @@ npm test           # builds, then runs the CLI and skill consistency tests
 npm run sync-spec  # refresh spec/openapi.json and spec/asyncapi.json from dydt.ai
 npm run sync-rules # copy scripts/shared-rules.md into every skill
 ```
+
+The README images are rendered from `static/source/*.html` at 2x. Update the HTML when commands change, then re-render the matching PNG in `static/`.
 
 The tests fail if any skill, reference, or this README names a command, stream, or option the specs do not have; if a skill links outside its own folder; if a skill's shared rules are out of date; or if an API operation is not used by any skill.
 

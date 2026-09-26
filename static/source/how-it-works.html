@@ -1,0 +1,24 @@
+<html><head><link rel=stylesheet href=base.css><style>
+.frame{width:1280px;padding:56px 64px 60px}
+h2{font-size:34px;font-weight:720;letter-spacing:-.03em;margin-top:14px}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:44px;margin-top:40px;position:relative}
+.node{position:relative;border:1px solid #243028;border-radius:16px;background:#0f1310;padding:22px;min-height:236px}
+.node.key{border-color:#2f6b43}
+.node:not(:last-child)::after{content:"→";position:absolute;right:-34px;top:50%;transform:translateY(-50%);color:#22c55e;font-size:24px}
+.node svg{width:30px;height:30px;stroke:#22c55e;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.node .eyebrow{margin-top:16px;font-size:11px}
+.node h3{margin-top:8px;font-size:21px;font-weight:680}
+.node p{margin-top:10px;color:#98a59b;font-size:15px;line-height:1.5}
+.pills{display:flex;gap:12px;margin-top:34px}
+.pill{border:1px solid #243028;border-radius:999px;padding:9px 16px;color:#b9c6bc;font-size:14px}
+.pill b{color:#22c55e;margin-right:6px}
+</style></head><body><div class=frame><div class=grid></div>
+<div class=eyebrow>How it works</div><h2>Your agent asks. dydt answers from live Solana data.</h2>
+<div class=row>
+<div class=node><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3.5V7M9 12.5v1.5M15 12.5v1.5M1.5 12v3M22.5 12v3"/></svg><div class=eyebrow>You already have</div><h3>Your agent</h3><p>Claude Code, Cursor, Codex, OpenCode, Windsurf, Gemini CLI, and more.</p></div>
+<div class=node><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v14H8a3 3 0 0 1-3-3ZM5 18a3 3 0 0 1 3-3h11M9 8h6"/></svg><div class=eyebrow>npx skills add</div><h3>11 dydt skills</h3><p>Tell the agent which command answers which question, and how to read the result.</p></div>
+<div class="node key"><svg viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="m6.5 9.5 3 2.5-3 2.5M12 15h5"/></svg><div class=eyebrow>npm i -g dydt-cli</div><h3>dydt CLI</h3><p>Checks options before sending, filters injected text, keeps your key on your machine.</p></div>
+<div class=node><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg><div class=eyebrow>data.dydt.ai</div><h3>dydt Data API</h3><p>Tokens, pools, trades, wallet PnL, KOL activity, signals, and live streams.</p></div>
+</div>
+<div class=pills><span class=pill><b>●</b>Read-only: no trades, no signing</span><span class=pill><b>●</b>No wallet keys, ever</span><span class=pill><b>●</b>Requests pinned to *.dydt.ai</span></div>
+</div></body></html>

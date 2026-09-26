@@ -1,0 +1,23 @@
+<html><head><link rel=stylesheet href=base.css><style>
+.row{display:grid;grid-template-columns:1fr 1.15fr 1.25fr;gap:40px;align-items:stretch}
+.card{position:relative}
+.card:not(:last-child)::after{content:"→";position:absolute;right:-30px;top:50%;color:#22c55e;font-size:22px;transform:translateY(-50%)}
+.label{font-size:11px;font-weight:700;letter-spacing:.14em;color:#7fa58a;text-transform:uppercase}
+.bubble{margin-top:16px;padding:16px 18px;border-radius:14px 14px 14px 4px;background:#16301f;color:#eafff0;font-size:18px;line-height:1.45}
+.skill{margin-top:14px;display:inline-block;padding:6px 10px;border-radius:8px;background:#0a0d0b;border:1px solid #2f6b43;color:#4ade80;font-size:14px}
+.cmds{margin-top:14px;display:grid;gap:8px;font-size:13.5px}
+.cmds div{color:#dfe8e1}.cmds span{color:#4ade80}
+.checks{margin-top:14px;display:grid;gap:9px}
+.note{margin-top:14px;font-size:13.5px;line-height:1.5}
+</style></head><body><div class="frame pad"><div class=grid></div><div class=eyebrow>What happens when you ask</div><div class=h2>A plain question in, checked facts out.</div>
+<div class=row>
+<div class=card><div class=label>You ask</div><div class=bubble>Is &lt;token&gt; safe? Give me the red flags.</div><p class="note muted">Paste a token address from its page on dydt.ai.</p></div>
+<div class=card><div class=label>Your agent runs</div><div class="skill mono">dydt-token-check skill</div>
+<div class="cmds mono"><div><span>$</span> dydt token &lt;token&gt;</div><div><span>$</span> dydt token-holder-stats &lt;token&gt;</div><div><span>$</span> dydt token-holders &lt;token&gt;</div><div><span>$</span> dydt pools --base_address &lt;token&gt;</div><div><span>$</span> dydt wallet-created-tokens &lt;creator&gt;</div></div></div>
+<div class="card hi"><div class=label>You get (answer format)</div><div class=checks>
+<div class=chip><i class=dot style="background:#f87171"></i><b>Red</b><span class=muted>Mint authority, freeze authority, creator record</span></div>
+<div class=chip><i class=dot style="background:#fbbf24"></i><b>Caution</b><span class=muted>Top 10 share, snipers, transfer tax</span></div>
+<div class=chip><i class=dot style="background:#94a3b8"></i><b>Unknown</b><span class=muted>Any field dydt has no data for</span></div>
+<div class=chip><i class=dot style="background:#4ade80"></i><b>OK</b><span class=muted>Checks that passed</span></div></div>
+<p class="note muted">Each finding names the data it came from. No scores, no buy or sell advice.</p></div>
+</div></div></body></html>

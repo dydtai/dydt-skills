@@ -1,0 +1,15 @@
+<html><head><link rel=stylesheet href=base.css><style>
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.card{position:relative;display:flex;flex-direction:column;gap:8px}
+.card{display:grid!important;grid-template-columns:44px 1fr;column-gap:14px;align-items:start}.card>*:not(.num){grid-column:2}.card .num{grid-row:1/span 4}.card h3{margin-top:2px!important}
+.card h3{margin-top:10px;font-size:20px;font-weight:680}
+.card p{font-size:14.5px;line-height:1.5}
+.out{margin-top:10px;font-size:13.5px;color:#4ade80}
+.foot{margin-top:28px;font-size:15px}
+</style></head><body><div class="frame pad"><div class=grid></div><div class=eyebrow>Setup · about five minutes</div><div class=h2>Four commands, then just ask.</div>
+<div class=row>
+<div class=card><div class=num>1</div><h3>Install dydt</h3><p class=muted>Adds the dydt command to your computer.</p><div class="cmd mono">npm install -g dydt-cli</div></div>
+<div class=card><div class=num>2</div><h3>Add the skills</h3><p class=muted>Teaches your agent which command to run.</p><div class="cmd mono">npx skills add dydtai/dydt-skills -g</div></div>
+<div class=card><div class=num>3</div><h3>Save your key</h3><p class=muted>Free key from dydt.ai/developers/keys.</p><div class="cmd mono">dydt config set &lt;your-api-key&gt;</div></div>
+<div class="card hi"><div class=num>4</div><h3>Check it works</h3><p class=muted>Prints the live SOL price.</p><div class="cmd mono">dydt sol-price</div><div class="out mono">{"price_usd": 121.13}</div></div>
+</div><p class="foot muted">Then restart your agent and ask your first question.</p></div></body></html>
