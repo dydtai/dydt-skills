@@ -8,19 +8,36 @@ export const CLI_VERSION = version;
 export interface ApiError {
   http: number;
   code: number | null;
+  error: string | null;
   message: string;
   retry_after_seconds?: number;
   quota_remaining?: number;
 }
 
+export interface Pagination {
+  next_cursor: string | null;
+  has_more: boolean;
+}
+
 export type ApiResult =
-  | { ok: true; data: unknown; totalCount: number | null; quotaRemaining: number | null; quotaLimit: number | null }
+  | {
+      ok: true;
+      data: unknown;
+      pagination: Pagination | null;
+      quotaRemaining: number | null;
+      quotaLimit: number | null;
+    }
   | { ok: false; error: ApiError };
 
 interface Envelope {
-  status?: { statusMessage?: string; statusCode?: number; totalCount?: number };
+  code?: number;
+  error?: string | null;
+  message?: string;
   data?: unknown;
+  pagination?: Pagination;
 }
+
+const SUCCESS_CODE = 0;
 
 function numberHeader(headers: Headers, name: string): number | null {
   const raw = headers.get(name);
@@ -31,13 +48,7 @@ function numberHeader(headers: Headers, name: string): number | null {
 }
 
 function retryAfter(headers: Headers): number | undefined {
-  const seconds = numberHeader(headers, "retry-after");
-  if (seconds !== null) return seconds;
-  const reset = numberHeader(headers, "x-ratelimit-reset");
-  if (reset === null) return undefined;
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  if (reset > nowSeconds) return reset - nowSeconds;
-  return Math.max(0, Math.ceil(reset));
+  return numberHeader(headers, "retry-after") ?? numberHeader(headers, "ratelimit-reset") ?? undefined;
 }
 
 async function parseEnvelope(response: Response): Promise<Envelope | null> {
@@ -59,19 +70,20 @@ export async function callApi(url: string, apiKey: string): Promise<ApiResult> {
   });
   const body = await parseEnvelope(response);
   const quotaRemaining = numberHeader(response.headers, "x-quota-remaining");
-  if (response.ok && body) {
+  if (response.ok && body?.code === SUCCESS_CODE) {
     return {
       ok: true,
       data: body.data ?? null,
-      totalCount: body.status?.totalCount ?? null,
+      pagination: body.pagination ?? null,
       quotaRemaining,
       quotaLimit: numberHeader(response.headers, "x-quota-limit"),
     };
   }
   const error: ApiError = {
     http: response.status,
-    code: body?.status?.statusCode ?? null,
-    message: body?.status?.statusMessage ?? response.statusText ?? "Request failed",
+    code: body?.code ?? null,
+    error: body?.error ?? null,
+    message: body?.message || response.statusText || "Request failed",
   };
   if (response.status === 429) error.retry_after_seconds = retryAfter(response.headers);
   if (quotaRemaining !== null) error.quota_remaining = quotaRemaining;

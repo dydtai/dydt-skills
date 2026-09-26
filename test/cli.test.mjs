@@ -5,6 +5,7 @@ import { join } from "node:path";
 import test from "node:test";
 
 import { parseArgs } from "../dist/args.js";
+import { callApi } from "../dist/client.js";
 import { readApiKey, saveApiKey } from "../dist/config.js";
 import { apiBase, buildUrl, DEFAULT_API_BASE, DEFAULT_WS_URL, UsageError, wsUrl } from "../dist/request.js";
 import { FILTERED, sanitize } from "../dist/sanitize.js";
@@ -18,17 +19,22 @@ const op = (command) => operations.find((operation) => operation.command === com
 const WALLET = "4G9JAzftaydKjB2558MLnkYw175KMN6NGGgyxkeRuwwA";
 const BASE = "https://data.dydt.ai/v1";
 
-test("commands are the kebab-case operation ids", () => {
-  assert.equal(commandName("labeledTrades"), "labeled-trades");
-  assert.equal(commandName("walletPnlDaily"), "wallet-pnl-daily");
-  assert.ok(op("wallet"));
-  assert.ok(op("labeled-trades"));
+test("commands are the operation ids without get/list, in kebab case", () => {
+  assert.equal(commandName("list_wallet_activity"), "wallet-activity");
+  assert.equal(commandName("get_wallet_daily_pnl"), "wallet-daily-pnl");
+  assert.equal(commandName("search_tokens"), "search-tokens");
+  assert.ok(op("wallet-stats"));
+  assert.ok(op("wallet-activity"));
+  assert.ok(op("tokens"));
+  assert.ok(op("token"));
+  assert.ok(op("pools-metrics"));
+  assert.ok(op("pool-metrics"));
   assert.equal(new Set(operations.map((operation) => operation.command)).size, operations.length);
 });
 
 test("flags, repeated options, and key=value forms parse", () => {
-  const parsed = parseArgs(["signals", "--tiers", "qualified", "--tiers=high_conviction", "--raw"]);
-  assert.deepEqual(parsed.positionals, ["signals"]);
+  const parsed = parseArgs(["token-signals", "--tiers", "qualified", "--tiers=high_conviction", "--raw"]);
+  assert.deepEqual(parsed.positionals, ["token-signals"]);
   assert.deepEqual(parsed.params, { tiers: ["qualified", "high_conviction"] });
   assert.ok(parsed.flags.has("raw"));
   assert.throws(() => parseArgs(["search", "--q"]), /needs a value/);
@@ -37,28 +43,35 @@ test("flags, repeated options, and key=value forms parse", () => {
 
 test("path parameters are substituted and query parameters appended", () => {
   assert.equal(
-    buildUrl(BASE, op("wallet"), { wallet: [WALLET], minutes: ["60"] }),
-    `${BASE}/trade-metrics/users/${WALLET}?minutes=60`,
+    buildUrl(BASE, op("wallet-stats"), { wallet_address: [WALLET], window: ["1h"] }),
+    `${BASE}/wallets/${WALLET}/stats?window=1h`,
   );
-  assert.equal(buildUrl(BASE, op("market-price"), {}), `${BASE}/market/sol-price`);
+  assert.equal(buildUrl(BASE, op("sol-price"), {}), `${BASE}/market/sol-price`);
 });
 
-test("array parameters accept repeats or commas and send repeated keys", () => {
+test("array parameters accept repeats or commas and are sent comma-separated", () => {
   assert.equal(
-    buildUrl(BASE, op("signals"), { tiers: ["qualified,high_conviction"] }),
-    `${BASE}/token-signals/feed?tiers=qualified&tiers=high_conviction`,
+    buildUrl(BASE, op("token-signals"), { tiers: ["qualified", "high_conviction"] }),
+    `${BASE}/tokens/signals?tiers=qualified%2Chigh_conviction`,
+  );
+});
+
+test("required parameters with a default are filled in", () => {
+  assert.equal(
+    buildUrl(BASE, op("pool-candles"), { pool_address: [WALLET] }),
+    `${BASE}/pools/${WALLET}/candles`,
   );
 });
 
 test("bad input fails locally before any request", () => {
   const cases = [
-    [op("wallet"), { wallet: ["nope"] }, /not valid/],
-    [op("wallet"), {}, /required/],
-    [op("leaderboard"), { scope: ["tracked"] }, /one of/],
-    [op("labeled-trades"), { label: ["bot"] }, /one of/],
-    [op("wallet-trades"), { wallet: [WALLET], limit: ["201"] }, /at most 200/],
-    [op("search"), { q: ["a"], nope: ["1"] }, /unknown option --nope/],
-    [op("search"), { q: ["a", "b"] }, /takes one value/],
+    [op("wallet-stats"), { wallet_address: ["nope"] }, /not valid/],
+    [op("wallet-stats"), {}, /required/],
+    [op("wallet-leaderboard"), { scope: ["tracked"] }, /one of/],
+    [op("wallet-activity"), { label: ["bot"] }, /one of/],
+    [op("wallet-trades"), { wallet_address: [WALLET], limit: ["201"] }, /at most 200/],
+    [op("search-tokens"), { q: ["a"], nope: ["1"] }, /unknown option --nope/],
+    [op("search-tokens"), { q: ["a", "b"] }, /takes one value/],
   ];
   for (const [operation, input, message] of cases) {
     assert.throws(() => buildUrl(BASE, operation, input), (error) => error instanceof UsageError && message.test(error.message));
@@ -121,21 +134,28 @@ const stream = (id) => streams.find((candidate) => candidate.id === id);
 test("streams come from the AsyncAPI spec", () => {
   assert.ok(stream("trades"));
   assert.ok(stream("wallet_activity"));
-  assert.deepEqual(stream("trades").fields.map((field) => [field.name, field.required]), [["poolId", true]]);
+  assert.deepEqual(stream("trades").fields.map((field) => [field.name, field.required]), [["pool_address", true]]);
 });
 
 test("stream payloads are typed from the spec and validated locally", () => {
-  assert.deepEqual(buildPayload(stream("wallet_activity"), { wallets: [`${WALLET},${WALLET}`] }), {
-    wallets: [WALLET, WALLET],
+  assert.deepEqual(buildPayload(stream("wallet_activity"), { wallet_addresses: [`${WALLET},${WALLET}`] }), {
+    wallet_addresses: [WALLET, WALLET],
   });
-  assert.deepEqual(buildPayload(stream("prices"), { poolId: [WALLET], timeframe: ["1m"] }), {
-    poolId: WALLET,
-    timeframe: "1m",
+  assert.deepEqual(buildPayload(stream("candles"), { pool_address: [WALLET], interval: ["15m"] }), {
+    pool_address: WALLET,
+    interval: "15m",
+    mode: "price",
+    currency: "usd",
+  });
+  assert.deepEqual(buildPayload(stream("chart_lines"), { pool_address: [WALLET], token_address: [WALLET] }), {
+    pool_address: WALLET,
+    token_address: WALLET,
+    top_holder_count: 0,
   });
   assert.deepEqual(buildPayload(stream("token_signals"), {}), {});
-  assert.throws(() => buildPayload(stream("prices"), { poolId: [WALLET] }), /--timeframe is required/);
-  assert.throws(() => buildPayload(stream("prices"), { poolId: [WALLET], timeframe: ["2m"] }), /one of/);
-  assert.throws(() => buildPayload(stream("trades"), { poolId: [WALLET], nope: ["1"] }), /unknown option --nope/);
+  assert.throws(() => buildPayload(stream("candles"), {}), /--pool_address is required/);
+  assert.throws(() => buildPayload(stream("candles"), { pool_address: [WALLET], interval: ["2m"] }), /one of/);
+  assert.throws(() => buildPayload(stream("trades"), { pool_address: [WALLET], nope: ["1"] }), /unknown option --nope/);
 });
 
 test("the stream host is pinned like the API host", () => {
@@ -148,4 +168,29 @@ test("the stream host is pinned like the API host", () => {
     assert.throws(() => wsUrl(), UsageError, hostile);
   }
   delete process.env.DYDT_WS_URL;
+});
+
+function respondWith(status, body, headers = {}) {
+  globalThis.fetch = async () => new Response(JSON.stringify(body), { status, headers });
+}
+
+test("a success envelope yields data and pagination", async () => {
+  respondWith(200, { code: 0, error: null, message: "OK", data: [1], pagination: { next_cursor: "abc", has_more: true } }, {
+    "X-Quota-Remaining": "10",
+    "X-Quota-Limit": "100",
+  });
+  const result = await callApi(`${BASE}/trades`, "key");
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.data, [1]);
+  assert.deepEqual(result.pagination, { next_cursor: "abc", has_more: true });
+  assert.equal(result.quotaRemaining, 10);
+});
+
+test("an error envelope yields its code, name, and retry hint", async () => {
+  respondWith(429, { code: 4290, error: "RATE_LIMITED", message: "Too many requests", data: null }, { "Retry-After": "3" });
+  const result = await callApi(`${BASE}/trades`, "key");
+  assert.deepEqual(result, {
+    ok: false,
+    error: { http: 429, code: 4290, error: "RATE_LIMITED", message: "Too many requests", retry_after_seconds: 3 },
+  });
 });

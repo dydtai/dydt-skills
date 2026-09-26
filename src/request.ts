@@ -75,11 +75,20 @@ export function rejectUnknown(params: Parameter[], input: ParamValues, command: 
   );
 }
 
+function defaultValues(param: Parameter): string[] {
+  if (param.schema.default === undefined) return [];
+  return [String(param.schema.default)];
+}
+
 export function validatedValues(param: Parameter, input: ParamValues, command: string): string[] {
-  const values = splitValues(param, input[param.name] ?? []);
-  if (values.length === 0 && param.required)
+  const given = splitValues(param, input[param.name] ?? []);
+  if (given.length === 0 && param.required && param.schema.default === undefined)
     throw new UsageError(`--${param.name} is required for ${command}`);
+  const values = given.length === 0 && param.required ? defaultValues(param) : given;
   if (values.length > 1 && !isArrayParam(param)) throw new UsageError(`--${param.name} takes one value`);
+  const maxItems = param.schema.maxItems;
+  if (maxItems !== undefined && values.length > maxItems)
+    throw new UsageError(`--${param.name} takes at most ${maxItems} values`);
   for (const value of values) {
     const problem = checkValue(param, value);
     if (problem) throw new UsageError(problem);
@@ -96,6 +105,10 @@ export function buildUrl(base: string, operation: Operation, input: ParamValues)
     if (values.length === 0) continue;
     if (param.in === "path") {
       path = path.replace(`{${param.name}}`, encodeURIComponent(values[0] ?? ""));
+      continue;
+    }
+    if (param.explode === false) {
+      query.append(param.name, values.join(","));
       continue;
     }
     for (const value of values) query.append(param.name, value);

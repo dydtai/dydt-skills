@@ -1,6 +1,6 @@
 {
   "name": "dydt-cli",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "dydt CLI and AI agent skills: Solana memecoin market data, token risk checks, wallet PnL, KOL trades, signals, and live streams for Claude Code, Cursor, Codex, and other agents. Read-only.",
   "license": "MIT",
   "type": "module",

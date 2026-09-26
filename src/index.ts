@@ -89,7 +89,7 @@ function listing(operations: Operation[]): string {
     "       dydt config [set <api-key> | check]",
     "       dydt spec refresh",
   ].join("\n");
-  const footer = `Output is the response data as JSON. Errors print {"error": {...}} and exit non-zero.`;
+  const footer = `Output is the response data as JSON; paged commands note the next --cursor on stderr. Errors print {"error": {...}} and exit non-zero.`;
   return [header, ...sections, footer].join("\n\n");
 }
 
@@ -131,6 +131,8 @@ async function runOperation(operation: Operation, args: ParsedArgs): Promise<num
 
   const result = await callApi(url, key);
   if (!result.ok) return fail(result.error, raw);
+  if (result.pagination?.has_more && result.pagination.next_cursor)
+    process.stderr.write(`Notice: more results. Next page: --cursor ${result.pagination.next_cursor}\n`);
 
   const { value, neutralized } = sanitize(result.data);
   if (neutralized > 0)

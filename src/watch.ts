@@ -35,10 +35,17 @@ interface Frame {
   stream?: string;
 }
 
+const SCALAR: Record<string, (value: string) => unknown> = {
+  number: Number,
+  integer: Number,
+  boolean: (value) => value === "true",
+};
+
 function coerce(schemaType: string | undefined, values: string[]): unknown {
   if (schemaType === "array") return values;
-  if (schemaType === "number") return Number(values[0]);
-  return values[0];
+  const convert = SCALAR[schemaType ?? ""];
+  if (!convert) return values[0];
+  return convert(values[0] ?? "");
 }
 
 export function buildPayload(stream: Stream, input: ParamValues): Record<string, unknown> {

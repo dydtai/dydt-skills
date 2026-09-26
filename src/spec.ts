@@ -10,6 +10,7 @@ export interface ParameterSchema {
   minimum?: number;
   maximum?: number;
   exclusiveMinimum?: number;
+  maxItems?: number;
   items?: ParameterSchema;
 }
 
@@ -18,6 +19,7 @@ export interface Parameter {
   in: "path" | "query";
   required: boolean;
   description?: string;
+  explode?: boolean;
   schema: ParameterSchema;
 }
 
@@ -59,8 +61,10 @@ const OPENAPI: DocumentSource<OpenApiDocument> = {
 export const loadSpec = (): Promise<OpenApiDocument> => loadDocument(OPENAPI);
 export const fetchSpec = (): Promise<OpenApiDocument> => fetchDocument(OPENAPI);
 
+const VERB_PREFIX = /^(get|list)_/;
+
 export function commandName(operationId: string): string {
-  return operationId.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+  return operationId.replace(VERB_PREFIX, "").replaceAll("_", "-");
 }
 
 export function operationsOf(spec: OpenApiDocument): Operation[] {
