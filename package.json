@@ -3,6 +3,10 @@
   "version": "0.3.0",
   "description": "dydt CLI and AI agent skills: Solana memecoin market data, token risk checks, wallet PnL, KOL trades, signals, and live streams for Claude Code, Cursor, Codex, and other agents. Read-only.",
   "license": "MIT",
+  "author": {
+    "name": "dydt",
+    "url": "https://dydt.ai"
+  },
   "type": "module",
   "bin": {
     "dydt": "dist/index.js"
@@ -35,7 +39,6 @@
     "kol",
     "kol-tracker",
     "market-data",
-    "mcp",
     "memecoin",
     "pumpfun",
     "rug-check",
@@ -49,7 +52,7 @@
     "type": "git",
     "url": "https://github.com/dydtai/dydt-skills"
   },
-  "homepage": "https://github.com/dydtai/dydt-skills#readme",
+  "homepage": "https://dydt.ai/developers/agents",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0"

@@ -11,7 +11,7 @@
 [![license](https://img.shields.io/npm/l/dydt-cli)](LICENSE)
 [![GitHub](https://img.shields.io/badge/GitHub-dydtai%2Fdydt--skills-111)](https://github.com/dydtai/dydt-skills)
 
-[Website](https://dydt.ai) · [API docs](https://dydt.ai/developers) · [Get an API key](https://dydt.ai/developers/keys) · [Pricing](https://dydt.ai/developers/billing)
+[Website](https://dydt.ai) · [Agent setup guide](https://dydt.ai/developers/agents) · [API docs](https://dydt.ai/developers) · [Get an API key](https://dydt.ai/developers/keys) · [Pricing](https://dydt.ai/developers/billing)
 
 </div>
 
@@ -21,12 +21,14 @@
 
 Two pieces that work together:
 
-- **`dydt` CLI.** One command per [dydt Data API](https://dydt.ai/developers) endpoint (23 today), plus `dydt watch` for live WebSocket streams. Commands, options, and allowed values come from the live API spec and are checked before any request is sent.
+- **`dydt` CLI.** One command for every [dydt Data API](https://dydt.ai/developers) endpoint, plus `dydt watch` for live WebSocket streams. Commands, options, and allowed values come from the live API spec and are checked before any request is sent.
 - **Agent skills.** Eleven skills that tell Claude Code, Cursor, Codex, OpenCode, Windsurf, Gemini CLI, and other agents which command answers which question, and how to read the answer correctly.
 
 Ask your agent *"run a rug check on this token"*, *"what are KOLs buying today?"*, or *"how has this wallet done over 30 days?"* and it runs the right `dydt` commands and explains the result.
 
 **Read-only by design.** Nothing here holds wallet keys, signs transactions, or places trades.
+
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/how-it-works.png" alt="How it works: your agent uses the dydt skills to pick a dydt CLI command, and the CLI calls the read-only dydt Data API" width="1280">
 
 ## Why dydt
 
@@ -115,6 +117,8 @@ Watch pool <pool> for the next 5 minutes and tell me about any sell over $5k.
 ```
 
 ## CLI reference
+
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/commands.png" alt="Output of dydt list: every command grouped by tokens, pools, trades, rankings, signals, wallets, and market" width="1280">
 
 Every command prints the response `data` as pretty JSON. Add `--raw` for one line per result, which is easier to pipe into `jq`. Paged commands print the next `--cursor` on stderr. Run `dydt list` for every command and `dydt help <command>` for its options. Field names are snake_case: addresses end in `_address`, times in `_at` (Unix milliseconds), shares in `_pct` (0 to 100).
 

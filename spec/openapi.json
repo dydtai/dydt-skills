@@ -52,229 +52,6 @@
     }
   ],
   "paths": {
-    "/tokens": {
-      "get": {
-        "operationId": "list_tokens",
-        "tags": [
-          "Tokens"
-        ],
-        "summary": "List tokens",
-        "description": "Several tokens in one call, up to 50.\n\nUnknown addresses are left out of the result.",
-        "parameters": [
-          {
-            "name": "token_addresses",
-            "in": "query",
-            "required": true,
-            "description": "Tokens to fetch, comma-separated, up to 50.",
-            "style": "form",
-            "explode": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
-              },
-              "maxItems": 50,
-              "description": "Tokens to fetch, comma-separated, up to 50."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "token_address",
-                          "symbol",
-                          "name",
-                          "decimals",
-                          "supply_raw",
-                          "token_program_address",
-                          "mint_authority_address",
-                          "freeze_authority_address",
-                          "authorities_known",
-                          "transfer_fee_bps",
-                          "dex_paid",
-                          "initialized",
-                          "created_at",
-                          "metadata_uri",
-                          "image_url",
-                          "description",
-                          "socials",
-                          "metadata_updated_at"
-                        ],
-                        "properties": {
-                          "token_address": {
-                            "type": "string",
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Token mint address."
-                          },
-                          "symbol": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "Token symbol."
-                          },
-                          "name": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "Token name."
-                          },
-                          "decimals": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "description": "Token decimals."
-                          },
-                          "supply_raw": {
-                            "type": "string",
-                            "description": "Current supply in raw units; divide by 10^decimals."
-                          },
-                          "token_program_address": {
-                            "type": "string",
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Token program: SPL Token or Token-2022."
-                          },
-                          "mint_authority_address": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Mint authority; null when revoked or unknown."
-                          },
-                          "freeze_authority_address": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Freeze authority; null when revoked or unknown."
-                          },
-                          "authorities_known": {
-                            "type": "boolean",
-                            "description": "False when the authorities could not be read yet."
-                          },
-                          "transfer_fee_bps": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "description": "Token-2022 transfer fee in basis points."
-                          },
-                          "dex_paid": {
-                            "type": [
-                              "boolean",
-                              "null"
-                            ],
-                            "description": "Whether a DEX Screener profile was paid for."
-                          },
-                          "initialized": {
-                            "type": "boolean",
-                            "description": "Whether the mint account is initialized."
-                          },
-                          "created_at": {
-                            "type": "integer",
-                            "format": "int64",
-                            "description": "Token creation time."
-                          },
-                          "metadata_uri": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "Metadata URI recorded on chain."
-                          },
-                          "image_url": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "format": "uri",
-                            "description": "Token image URL on the dydt CDN."
-                          },
-                          "description": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "Description from the token metadata."
-                          },
-                          "socials": {
-                            "type": "object",
-                            "additionalProperties": {
-                              "type": "string",
-                              "format": "uri"
-                            },
-                            "description": "Platform name to URL, for example twitter, telegram, website. Only known links are present."
-                          },
-                          "metadata_updated_at": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "format": "int64",
-                            "description": "When the off-chain metadata was last fetched."
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
     "/tokens/search": {
       "get": {
         "operationId": "search_tokens",
@@ -582,13 +359,1720 @@
         }
       }
     },
+    "/tokens/{token_address}": {
+      "get": {
+        "operationId": "get_token",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get a token",
+        "description": "On-chain mint data and off-chain metadata for one token.",
+        "parameters": [
+          {
+            "name": "token_address",
+            "in": "path",
+            "required": true,
+            "description": "Token mint address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "Token mint address."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "token_address",
+                        "symbol",
+                        "name",
+                        "decimals",
+                        "supply_raw",
+                        "token_program_address",
+                        "mint_authority_address",
+                        "freeze_authority_address",
+                        "authorities_known",
+                        "transfer_fee_bps",
+                        "dex_paid",
+                        "initialized",
+                        "created_at",
+                        "metadata_uri",
+                        "image_url",
+                        "description",
+                        "socials",
+                        "metadata_updated_at"
+                      ],
+                      "properties": {
+                        "token_address": {
+                          "type": "string",
+                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                          "description": "Token mint address."
+                        },
+                        "symbol": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Token symbol."
+                        },
+                        "name": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Token name."
+                        },
+                        "decimals": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Token decimals."
+                        },
+                        "supply_raw": {
+                          "type": "string",
+                          "description": "Current supply in raw units; divide by 10^decimals."
+                        },
+                        "token_program_address": {
+                          "type": "string",
+                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                          "description": "Token program: SPL Token or Token-2022."
+                        },
+                        "mint_authority_address": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                          "description": "Mint authority; null when revoked or unknown."
+                        },
+                        "freeze_authority_address": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                          "description": "Freeze authority; null when revoked or unknown."
+                        },
+                        "authorities_known": {
+                          "type": "boolean",
+                          "description": "False when the authorities could not be read yet."
+                        },
+                        "transfer_fee_bps": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Token-2022 transfer fee in basis points."
+                        },
+                        "dex_paid": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ],
+                          "description": "Whether a DEX Screener profile was paid for."
+                        },
+                        "initialized": {
+                          "type": "boolean",
+                          "description": "Whether the mint account is initialized."
+                        },
+                        "created_at": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Token creation time."
+                        },
+                        "metadata_uri": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Metadata URI recorded on chain."
+                        },
+                        "image_url": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uri",
+                          "description": "Token image URL on the dydt CDN."
+                        },
+                        "description": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Description from the token metadata."
+                        },
+                        "socials": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "description": "Platform name to URL, for example twitter, telegram, website. Only known links are present."
+                        },
+                        "metadata_updated_at": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "format": "int64",
+                          "description": "When the off-chain metadata was last fetched."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/tokens": {
+      "get": {
+        "operationId": "list_tokens",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get many tokens",
+        "description": "Several tokens in one call, up to 50.\n\nUnknown addresses are left out of the result.",
+        "parameters": [
+          {
+            "name": "token_addresses",
+            "in": "query",
+            "required": true,
+            "description": "Tokens to fetch, comma-separated, up to 50.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+              },
+              "maxItems": 50,
+              "description": "Tokens to fetch, comma-separated, up to 50."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "token_address",
+                          "symbol",
+                          "name",
+                          "decimals",
+                          "supply_raw",
+                          "token_program_address",
+                          "mint_authority_address",
+                          "freeze_authority_address",
+                          "authorities_known",
+                          "transfer_fee_bps",
+                          "dex_paid",
+                          "initialized",
+                          "created_at",
+                          "metadata_uri",
+                          "image_url",
+                          "description",
+                          "socials",
+                          "metadata_updated_at"
+                        ],
+                        "properties": {
+                          "token_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Token mint address."
+                          },
+                          "symbol": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Token symbol."
+                          },
+                          "name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Token name."
+                          },
+                          "decimals": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "description": "Token decimals."
+                          },
+                          "supply_raw": {
+                            "type": "string",
+                            "description": "Current supply in raw units; divide by 10^decimals."
+                          },
+                          "token_program_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Token program: SPL Token or Token-2022."
+                          },
+                          "mint_authority_address": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Mint authority; null when revoked or unknown."
+                          },
+                          "freeze_authority_address": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Freeze authority; null when revoked or unknown."
+                          },
+                          "authorities_known": {
+                            "type": "boolean",
+                            "description": "False when the authorities could not be read yet."
+                          },
+                          "transfer_fee_bps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "description": "Token-2022 transfer fee in basis points."
+                          },
+                          "dex_paid": {
+                            "type": [
+                              "boolean",
+                              "null"
+                            ],
+                            "description": "Whether a DEX Screener profile was paid for."
+                          },
+                          "initialized": {
+                            "type": "boolean",
+                            "description": "Whether the mint account is initialized."
+                          },
+                          "created_at": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Token creation time."
+                          },
+                          "metadata_uri": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Metadata URI recorded on chain."
+                          },
+                          "image_url": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "uri",
+                            "description": "Token image URL on the dydt CDN."
+                          },
+                          "description": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Description from the token metadata."
+                          },
+                          "socials": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "description": "Platform name to URL, for example twitter, telegram, website. Only known links are present."
+                          },
+                          "metadata_updated_at": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "format": "int64",
+                            "description": "When the off-chain metadata was last fetched."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/tokens/{token_address}/holder-stats": {
+      "get": {
+        "operationId": "get_token_holder_stats",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get holder distribution",
+        "description": "How the token's supply is spread across holders, insiders, and fresh wallets, plus the creator's track record.",
+        "parameters": [
+          {
+            "name": "token_address",
+            "in": "path",
+            "required": true,
+            "description": "Token mint address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "Token mint address."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "token_address",
+                        "holder_count",
+                        "insider_count",
+                        "fresh_count",
+                        "insider_pct",
+                        "fresh_pct",
+                        "creator_launch_count",
+                        "creator_dump_pct",
+                        "creator_judged_launch_count"
+                      ],
+                      "properties": {
+                        "token_address": {
+                          "type": "string",
+                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                          "description": "Token mint address."
+                        },
+                        "holder_count": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Wallets holding the token."
+                        },
+                        "insider_count": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Holders who got tokens without buying them, for example by transfer."
+                        },
+                        "fresh_count": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Holders whose wallet was first seen within 24 hours before they got the token. Null until the token is 24 hours old."
+                        },
+                        "insider_pct": {
+                          "type": [
+                            "number",
+                            "null"
+                          ],
+                          "description": "Share of supply held by insiders, 0 to 100."
+                        },
+                        "fresh_pct": {
+                          "type": [
+                            "number",
+                            "null"
+                          ],
+                          "description": "Share of supply held by fresh wallets, 0 to 100."
+                        },
+                        "creator_launch_count": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Tokens the creator has launched."
+                        },
+                        "creator_dump_pct": {
+                          "type": [
+                            "number",
+                            "null"
+                          ],
+                          "description": "Share of the creator's other launches they sold out of, 0 to 100. Null until enough launches can be judged."
+                        },
+                        "creator_judged_launch_count": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Other launches with a clear held or sold-out outcome."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/tokens/{token_address}/holders": {
+      "get": {
+        "operationId": "list_token_holders",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "List top holders",
+        "description": "Wallets holding the most of the token right now, largest first.\n\nlabel=kol or smart or vc or dev_team or bot or mayhem_bot or agent_buyback or rat needs the Pro or Scale plan.\n\nHoldings come from trades dydt indexed. Pool vaults and wallets that only received tokens by transfer are not listed.",
+        "parameters": [
+          {
+            "name": "token_address",
+            "in": "path",
+            "required": true,
+            "description": "Token mint address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "Token mint address."
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "required": false,
+            "description": "Only holders with this label. Needs the Pro or Scale plan.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "kol",
+                "smart",
+                "vc",
+                "dev_team",
+                "bot",
+                "mayhem_bot",
+                "agent_buyback",
+                "rat"
+              ],
+              "description": "Only holders with this label. Needs the Pro or Scale plan."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum rows to return.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Maximum rows to return.",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "wallet_address",
+                          "token_amount",
+                          "supply_pct",
+                          "cost_usd",
+                          "cost_sol",
+                          "bought_token_amount",
+                          "bought_usd",
+                          "sold_token_amount",
+                          "sold_usd",
+                          "first_bought_at",
+                          "updated_at",
+                          "labels"
+                        ],
+                        "properties": {
+                          "wallet_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Wallet address."
+                          },
+                          "token_amount": {
+                            "type": "number",
+                            "description": "Tokens held now, in whole tokens."
+                          },
+                          "supply_pct": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Share of total supply held, 0 to 100. Null when supply is unknown."
+                          },
+                          "cost_usd": {
+                            "type": "number",
+                            "description": "Cost basis of the tokens still held, in USD."
+                          },
+                          "cost_sol": {
+                            "type": "number",
+                            "description": "Cost basis of the tokens still held, in SOL."
+                          },
+                          "bought_token_amount": {
+                            "type": "number",
+                            "description": "Tokens bought over the wallet's lifetime, in whole tokens."
+                          },
+                          "bought_usd": {
+                            "type": "number",
+                            "description": "Spent on buys over the wallet's lifetime, in USD."
+                          },
+                          "sold_token_amount": {
+                            "type": "number",
+                            "description": "Tokens sold over the wallet's lifetime, in whole tokens."
+                          },
+                          "sold_usd": {
+                            "type": "number",
+                            "description": "Received from sells over the wallet's lifetime, in USD."
+                          },
+                          "first_bought_at": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "format": "int64",
+                            "description": "First buy of this token."
+                          },
+                          "updated_at": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Last change to this position."
+                          },
+                          "labels": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "label",
+                                "name",
+                                "avatar_url"
+                              ],
+                              "properties": {
+                                "label": {
+                                  "type": "string",
+                                  "description": "Label, for example kol, smart, vc, dev_team, bot, or rat."
+                                },
+                                "name": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "Display name when known, for example a KOL handle."
+                                },
+                                "avatar_url": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "format": "uri",
+                                  "description": "Avatar image URL when known."
+                                }
+                              }
+                            },
+                            "description": "Public labels on the wallet; empty for most wallets."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/tokens/{token_address}/traders": {
+      "get": {
+        "operationId": "list_token_traders",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "List top traders",
+        "description": "Wallets that traded the token, ranked by profit or activity.\n\nlabel=kol or smart or vc needs the Pro or Scale plan.",
+        "parameters": [
+          {
+            "name": "token_address",
+            "in": "path",
+            "required": true,
+            "description": "Token mint address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "Token mint address."
+            }
+          },
+          {
+            "name": "window",
+            "in": "query",
+            "required": false,
+            "description": "Only count trades in this window. Omit for all time.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "24h",
+                "3d",
+                "7d",
+                "30d"
+              ],
+              "description": "Only count trades in this window. Omit for all time."
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Field to sort by.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "realized_pnl",
+                "bought",
+                "sold",
+                "holding_value",
+                "token_balance",
+                "trade_count"
+              ],
+              "description": "Field to sort by.",
+              "default": "realized_pnl"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "Sort order.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "description": "Sort order.",
+              "default": "desc"
+            }
+          },
+          {
+            "name": "position",
+            "in": "query",
+            "required": false,
+            "description": "Everyone, wallets still holding, or wallets that sold out.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "holding",
+                "sold"
+              ],
+              "description": "Everyone, wallets still holding, or wallets that sold out.",
+              "default": "all"
+            }
+          },
+          {
+            "name": "activity",
+            "in": "query",
+            "required": false,
+            "description": "Everyone, buyers only, or sellers only.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "buyers",
+                "sellers"
+              ],
+              "description": "Everyone, buyers only, or sellers only.",
+              "default": "all"
+            }
+          },
+          {
+            "name": "outcome",
+            "in": "query",
+            "required": false,
+            "description": "Everyone, wallets in profit, or wallets at a loss.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "profit",
+                "loss"
+              ],
+              "description": "Everyone, wallets in profit, or wallets at a loss.",
+              "default": "all"
+            }
+          },
+          {
+            "name": "entry_window",
+            "in": "query",
+            "required": false,
+            "description": "Only wallets that first bought within this long of launch; late means after the first hour.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "1m",
+                "5m",
+                "1h",
+                "24h",
+                "late"
+              ],
+              "description": "Only wallets that first bought within this long of launch; late means after the first hour.",
+              "default": "all"
+            }
+          },
+          {
+            "name": "min_bought_usd",
+            "in": "query",
+            "required": false,
+            "description": "Only wallets that bought at least this much, in USD.",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Only wallets that bought at least this much, in USD."
+            }
+          },
+          {
+            "name": "min_trade_count",
+            "in": "query",
+            "required": false,
+            "description": "Only wallets with at least this many trades.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Only wallets with at least this many trades."
+            }
+          },
+          {
+            "name": "wallet_addresses",
+            "in": "query",
+            "required": false,
+            "description": "Only these wallets, comma-separated, up to 200.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+              },
+              "maxItems": 200,
+              "description": "Only these wallets, comma-separated, up to 200."
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "required": false,
+            "description": "Only wallets with this label. Needs the Pro or Scale plan.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "kol",
+                "smart",
+                "vc"
+              ],
+              "description": "Only wallets with this label. Needs the Pro or Scale plan."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum rows to return.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Maximum rows to return.",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "wallet_address",
+                          "bought_usd",
+                          "bought_sol",
+                          "bought_token_amount",
+                          "buy_count",
+                          "sold_usd",
+                          "sold_sol",
+                          "sold_token_amount",
+                          "sell_count",
+                          "trade_count",
+                          "token_balance",
+                          "first_trade_at",
+                          "last_trade_at",
+                          "realized_pnl_usd",
+                          "realized_pnl_sol",
+                          "holding_value_usd",
+                          "holding_value_sol"
+                        ],
+                        "properties": {
+                          "wallet_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Wallet address."
+                          },
+                          "bought_usd": {
+                            "type": "number",
+                            "description": "Total bought, in USD."
+                          },
+                          "bought_sol": {
+                            "type": "number",
+                            "description": "Total bought, in SOL."
+                          },
+                          "bought_token_amount": {
+                            "type": "number",
+                            "description": "Tokens bought, in whole tokens."
+                          },
+                          "buy_count": {
+                            "type": "integer",
+                            "description": "Buy transactions."
+                          },
+                          "sold_usd": {
+                            "type": "number",
+                            "description": "Total sold, in USD."
+                          },
+                          "sold_sol": {
+                            "type": "number",
+                            "description": "Total sold, in SOL."
+                          },
+                          "sold_token_amount": {
+                            "type": "number",
+                            "description": "Tokens sold, in whole tokens."
+                          },
+                          "sell_count": {
+                            "type": "integer",
+                            "description": "Sell transactions."
+                          },
+                          "trade_count": {
+                            "type": "integer",
+                            "description": "All transactions."
+                          },
+                          "token_balance": {
+                            "type": "number",
+                            "description": "Tokens still held from these trades, in whole tokens."
+                          },
+                          "first_trade_at": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "First trade."
+                          },
+                          "last_trade_at": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Latest trade."
+                          },
+                          "realized_pnl_usd": {
+                            "type": "number",
+                            "description": "Realized profit in USD."
+                          },
+                          "realized_pnl_sol": {
+                            "type": "number",
+                            "description": "Realized profit in SOL."
+                          },
+                          "holding_value_usd": {
+                            "type": "number",
+                            "description": "Value of the remaining balance at the current price, in USD."
+                          },
+                          "holding_value_sol": {
+                            "type": "number",
+                            "description": "Value of the remaining balance at the current price, in SOL."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/tokens/{token_address}/bonding-curve": {
+      "get": {
+        "operationId": "get_token_bonding_curve",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get bonding curve",
+        "description": "Latest bonding-curve reserves for a token launched on a curve.\n\nReturns 404 for tokens without a bonding curve. After migration the state stops updating; use the AMM pool instead.",
+        "parameters": [
+          {
+            "name": "token_address",
+            "in": "path",
+            "required": true,
+            "description": "Token mint address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "Token mint address."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "token_address",
+                        "virtual_token_reserves_raw",
+                        "virtual_sol_reserves_lamports",
+                        "real_token_reserves_raw",
+                        "real_sol_reserves_lamports",
+                        "total_supply",
+                        "completed",
+                        "creator_address"
+                      ],
+                      "properties": {
+                        "token_address": {
+                          "type": "string",
+                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                          "description": "Token mint address."
+                        },
+                        "virtual_token_reserves_raw": {
+                          "type": "string",
+                          "description": "Virtual token reserves, raw units."
+                        },
+                        "virtual_sol_reserves_lamports": {
+                          "type": "string",
+                          "description": "Virtual SOL reserves, in lamports."
+                        },
+                        "real_token_reserves_raw": {
+                          "type": "string",
+                          "description": "Tokens left to sell on the curve, raw units."
+                        },
+                        "real_sol_reserves_lamports": {
+                          "type": "string",
+                          "description": "SOL held by the curve, in lamports."
+                        },
+                        "total_supply": {
+                          "type": "string",
+                          "description": "Total supply in whole tokens."
+                        },
+                        "completed": {
+                          "type": "boolean",
+                          "description": "True once the curve has filled and the token migrated."
+                        },
+                        "creator_address": {
+                          "type": "string",
+                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                          "description": "Wallet that created the token."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/tokens/{token_address}/signals": {
+      "get": {
+        "operationId": "list_token_signal_history",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "List a token's signals",
+        "description": "The latest signals that fired on the token, newest first.\n\nNeeds the Pro or Scale plan.",
+        "parameters": [
+          {
+            "name": "token_address",
+            "in": "path",
+            "required": true,
+            "description": "Token mint address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "Token mint address."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum rows to return.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Maximum rows to return.",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "signal_id",
+                          "token_address",
+                          "pool_address",
+                          "symbol",
+                          "name",
+                          "image_url",
+                          "dex",
+                          "tier",
+                          "kind",
+                          "kinds",
+                          "confluence",
+                          "pool_kind",
+                          "anchor",
+                          "fast_path",
+                          "alert_index",
+                          "alerted_at",
+                          "triggered_at",
+                          "detection_lag_ms",
+                          "alert_market_cap_usd",
+                          "alert_price_usd",
+                          "alert_liquidity_usd",
+                          "alert_sol_price_usd",
+                          "alert_trader_count",
+                          "first_alert_at",
+                          "first_alert_market_cap_usd",
+                          "first_alert_price_usd",
+                          "first_alert_liquidity_usd",
+                          "first_alert_sol_price_usd",
+                          "first_alert_trader_count",
+                          "current_market_cap_usd",
+                          "current_price_usd",
+                          "current_liquidity_usd",
+                          "current_trader_count",
+                          "peak_market_cap_usd",
+                          "peak_at",
+                          "token_peak_market_cap_usd",
+                          "token_peak_at",
+                          "bonding_curve_progress_pct",
+                          "entity_count",
+                          "tier_a_count",
+                          "tier_b_count",
+                          "tier_c_count",
+                          "cohort_buy_usd",
+                          "buyer_burst",
+                          "warnings",
+                          "migrated_at",
+                          "migrated_to_pool_address"
+                        ],
+                        "properties": {
+                          "signal_id": {
+                            "type": "string",
+                            "description": "Signal id, stable across alerts for the same signal."
+                          },
+                          "token_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Token mint address."
+                          },
+                          "pool_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Pool the signal fired on."
+                          },
+                          "symbol": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Token symbol."
+                          },
+                          "name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Token name."
+                          },
+                          "image_url": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "uri",
+                            "description": "Token image URL on the dydt CDN."
+                          },
+                          "dex": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Venue of the pool, for example pumpfun, pumpAmm, raydium, meteora."
+                          },
+                          "tier": {
+                            "type": "string",
+                            "enum": [
+                              "high_conviction",
+                              "qualified"
+                            ],
+                            "description": "Signal quality tier."
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "cohort",
+                              "momentum"
+                            ],
+                            "description": "Primary detector that fired."
+                          },
+                          "kinds": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "cohort",
+                                "momentum"
+                              ]
+                            },
+                            "description": "Every detector that fired for this signal."
+                          },
+                          "confluence": {
+                            "type": "boolean",
+                            "description": "True when more than one detector agreed."
+                          },
+                          "pool_kind": {
+                            "type": "string",
+                            "enum": [
+                              "bonding_curve",
+                              "amm"
+                            ],
+                            "description": "Pool model at the time of the alert."
+                          },
+                          "anchor": {
+                            "type": "boolean",
+                            "description": "True when this is the first signal on the token."
+                          },
+                          "fast_path": {
+                            "type": "boolean",
+                            "description": "True when two or more tier A wallets bought within seconds of each other."
+                          },
+                          "alert_index": {
+                            "type": "integer",
+                            "description": "Alert number within the signal, from 1."
+                          },
+                          "alerted_at": {
+                            "type": "array",
+                            "items": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "description": "Time of every alert for this signal."
+                          },
+                          "triggered_at": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Trade that triggered this alert."
+                          },
+                          "detection_lag_ms": {
+                            "type": "integer",
+                            "description": "Milliseconds from that trade to the alert."
+                          },
+                          "alert_market_cap_usd": {
+                            "type": "number",
+                            "description": "Market cap at this alert."
+                          },
+                          "alert_price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Price at this alert."
+                          },
+                          "alert_liquidity_usd": {
+                            "type": "number",
+                            "description": "Liquidity at this alert."
+                          },
+                          "alert_sol_price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "SOL price at this alert."
+                          },
+                          "alert_trader_count": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "description": "Distinct traders at this alert."
+                          },
+                          "first_alert_at": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "First alert of this signal."
+                          },
+                          "first_alert_market_cap_usd": {
+                            "type": "number",
+                            "description": "Market cap at the first alert."
+                          },
+                          "first_alert_price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Price at the first alert."
+                          },
+                          "first_alert_liquidity_usd": {
+                            "type": "number",
+                            "description": "Liquidity at the first alert."
+                          },
+                          "first_alert_sol_price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "SOL price at the first alert."
+                          },
+                          "first_alert_trader_count": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "description": "Distinct traders at the first alert."
+                          },
+                          "current_market_cap_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap now."
+                          },
+                          "current_price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Price now."
+                          },
+                          "current_liquidity_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Liquidity now."
+                          },
+                          "current_trader_count": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "description": "Distinct traders now."
+                          },
+                          "peak_market_cap_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Highest market cap since this alert."
+                          },
+                          "peak_at": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "format": "int64",
+                            "description": "Time of that peak."
+                          },
+                          "token_peak_market_cap_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Highest market cap since the first alert."
+                          },
+                          "token_peak_at": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "format": "int64",
+                            "description": "Time of that peak."
+                          },
+                          "bonding_curve_progress_pct": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Bonding curve completion at this alert, 0 to 100."
+                          },
+                          "entity_count": {
+                            "type": "integer",
+                            "description": "Distinct buyer entities behind the signal."
+                          },
+                          "tier_a_count": {
+                            "type": "integer",
+                            "description": "Tier A wallets among them."
+                          },
+                          "tier_b_count": {
+                            "type": "integer",
+                            "description": "Tier B wallets among them."
+                          },
+                          "tier_c_count": {
+                            "type": "integer",
+                            "description": "Tier C wallets among them."
+                          },
+                          "cohort_buy_usd": {
+                            "type": "number",
+                            "description": "Combined buys by those entities."
+                          },
+                          "buyer_burst": {
+                            "type": "number",
+                            "description": "Unique buyers in the 10-second detection window relative to the 5-minute buyer rate; 1 is normal."
+                          },
+                          "warnings": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Caveats, for example dev_share_unknown."
+                          },
+                          "migrated_at": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "format": "int64",
+                            "description": "When the token migrated off its bonding curve."
+                          },
+                          "migrated_to_pool_address": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "AMM pool it migrated to."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
     "/tokens/rankings/{feed}": {
       "get": {
         "operationId": "get_token_ranking",
         "tags": [
           "Rankings"
         ],
-        "summary": "Get token ranking",
+        "summary": "Get a ranked feed",
         "description": "A ranked token feed with market filters.\n\nRanking snapshots can report quote values as 0 while USD is set; prefer the USD fields.\n\nWithout sort, live feeds are ordered by recency and ranked feeds by their score; order still applies.",
         "parameters": [
           {
@@ -2336,1490 +3820,6 @@
         }
       }
     },
-    "/tokens/{token_address}": {
-      "get": {
-        "operationId": "get_token",
-        "tags": [
-          "Tokens"
-        ],
-        "summary": "Get token",
-        "description": "On-chain mint data and off-chain metadata for one token.",
-        "parameters": [
-          {
-            "name": "token_address",
-            "in": "path",
-            "required": true,
-            "description": "Token mint address.",
-            "schema": {
-              "type": "string",
-              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-              "description": "Token mint address."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object",
-                      "required": [
-                        "token_address",
-                        "symbol",
-                        "name",
-                        "decimals",
-                        "supply_raw",
-                        "token_program_address",
-                        "mint_authority_address",
-                        "freeze_authority_address",
-                        "authorities_known",
-                        "transfer_fee_bps",
-                        "dex_paid",
-                        "initialized",
-                        "created_at",
-                        "metadata_uri",
-                        "image_url",
-                        "description",
-                        "socials",
-                        "metadata_updated_at"
-                      ],
-                      "properties": {
-                        "token_address": {
-                          "type": "string",
-                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                          "description": "Token mint address."
-                        },
-                        "symbol": {
-                          "type": [
-                            "string",
-                            "null"
-                          ],
-                          "description": "Token symbol."
-                        },
-                        "name": {
-                          "type": [
-                            "string",
-                            "null"
-                          ],
-                          "description": "Token name."
-                        },
-                        "decimals": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "description": "Token decimals."
-                        },
-                        "supply_raw": {
-                          "type": "string",
-                          "description": "Current supply in raw units; divide by 10^decimals."
-                        },
-                        "token_program_address": {
-                          "type": "string",
-                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                          "description": "Token program: SPL Token or Token-2022."
-                        },
-                        "mint_authority_address": {
-                          "type": [
-                            "string",
-                            "null"
-                          ],
-                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                          "description": "Mint authority; null when revoked or unknown."
-                        },
-                        "freeze_authority_address": {
-                          "type": [
-                            "string",
-                            "null"
-                          ],
-                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                          "description": "Freeze authority; null when revoked or unknown."
-                        },
-                        "authorities_known": {
-                          "type": "boolean",
-                          "description": "False when the authorities could not be read yet."
-                        },
-                        "transfer_fee_bps": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "description": "Token-2022 transfer fee in basis points."
-                        },
-                        "dex_paid": {
-                          "type": [
-                            "boolean",
-                            "null"
-                          ],
-                          "description": "Whether a DEX Screener profile was paid for."
-                        },
-                        "initialized": {
-                          "type": "boolean",
-                          "description": "Whether the mint account is initialized."
-                        },
-                        "created_at": {
-                          "type": "integer",
-                          "format": "int64",
-                          "description": "Token creation time."
-                        },
-                        "metadata_uri": {
-                          "type": [
-                            "string",
-                            "null"
-                          ],
-                          "description": "Metadata URI recorded on chain."
-                        },
-                        "image_url": {
-                          "type": [
-                            "string",
-                            "null"
-                          ],
-                          "format": "uri",
-                          "description": "Token image URL on the dydt CDN."
-                        },
-                        "description": {
-                          "type": [
-                            "string",
-                            "null"
-                          ],
-                          "description": "Description from the token metadata."
-                        },
-                        "socials": {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "string",
-                            "format": "uri"
-                          },
-                          "description": "Platform name to URL, for example twitter, telegram, website. Only known links are present."
-                        },
-                        "metadata_updated_at": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "format": "int64",
-                          "description": "When the off-chain metadata was last fetched."
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/tokens/{token_address}/holder-stats": {
-      "get": {
-        "operationId": "get_token_holder_stats",
-        "tags": [
-          "Tokens"
-        ],
-        "summary": "Get token holder stats",
-        "description": "How the token's supply is spread across holders, insiders, and fresh wallets, plus the creator's track record.",
-        "parameters": [
-          {
-            "name": "token_address",
-            "in": "path",
-            "required": true,
-            "description": "Token mint address.",
-            "schema": {
-              "type": "string",
-              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-              "description": "Token mint address."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object",
-                      "required": [
-                        "token_address",
-                        "holder_count",
-                        "insider_count",
-                        "fresh_count",
-                        "insider_pct",
-                        "fresh_pct",
-                        "creator_launch_count",
-                        "creator_dump_pct",
-                        "creator_judged_launch_count"
-                      ],
-                      "properties": {
-                        "token_address": {
-                          "type": "string",
-                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                          "description": "Token mint address."
-                        },
-                        "holder_count": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "description": "Wallets holding the token."
-                        },
-                        "insider_count": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "description": "Holders who got tokens without buying them, for example by transfer."
-                        },
-                        "fresh_count": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "description": "Holders whose wallet was first seen within 24 hours before they got the token. Null until the token is 24 hours old."
-                        },
-                        "insider_pct": {
-                          "type": [
-                            "number",
-                            "null"
-                          ],
-                          "description": "Share of supply held by insiders, 0 to 100."
-                        },
-                        "fresh_pct": {
-                          "type": [
-                            "number",
-                            "null"
-                          ],
-                          "description": "Share of supply held by fresh wallets, 0 to 100."
-                        },
-                        "creator_launch_count": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "description": "Tokens the creator has launched."
-                        },
-                        "creator_dump_pct": {
-                          "type": [
-                            "number",
-                            "null"
-                          ],
-                          "description": "Share of the creator's other launches they sold out of, 0 to 100. Null until enough launches can be judged."
-                        },
-                        "creator_judged_launch_count": {
-                          "type": [
-                            "integer",
-                            "null"
-                          ],
-                          "description": "Other launches with a clear held or sold-out outcome."
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/tokens/{token_address}/holders": {
-      "get": {
-        "operationId": "list_token_holders",
-        "tags": [
-          "Tokens"
-        ],
-        "summary": "List token holders",
-        "description": "Wallets holding the most of the token right now, largest first.\n\nlabel=kol or smart or vc or dev_team or bot or mayhem_bot or agent_buyback or rat needs the Pro or Scale plan.\n\nHoldings come from trades dydt indexed. Pool vaults and wallets that only received tokens by transfer are not listed.",
-        "parameters": [
-          {
-            "name": "token_address",
-            "in": "path",
-            "required": true,
-            "description": "Token mint address.",
-            "schema": {
-              "type": "string",
-              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-              "description": "Token mint address."
-            }
-          },
-          {
-            "name": "label",
-            "in": "query",
-            "required": false,
-            "description": "Only holders with this label. Needs the Pro or Scale plan.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "kol",
-                "smart",
-                "vc",
-                "dev_team",
-                "bot",
-                "mayhem_bot",
-                "agent_buyback",
-                "rat"
-              ],
-              "description": "Only holders with this label. Needs the Pro or Scale plan."
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "description": "Maximum rows to return.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "description": "Maximum rows to return.",
-              "default": 50
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "wallet_address",
-                          "token_amount",
-                          "supply_pct",
-                          "cost_usd",
-                          "cost_sol",
-                          "bought_token_amount",
-                          "bought_usd",
-                          "sold_token_amount",
-                          "sold_usd",
-                          "first_bought_at",
-                          "updated_at",
-                          "labels"
-                        ],
-                        "properties": {
-                          "wallet_address": {
-                            "type": "string",
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Wallet address."
-                          },
-                          "token_amount": {
-                            "type": "number",
-                            "description": "Tokens held now, in whole tokens."
-                          },
-                          "supply_pct": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Share of total supply held, 0 to 100. Null when supply is unknown."
-                          },
-                          "cost_usd": {
-                            "type": "number",
-                            "description": "Cost basis of the tokens still held, in USD."
-                          },
-                          "cost_sol": {
-                            "type": "number",
-                            "description": "Cost basis of the tokens still held, in SOL."
-                          },
-                          "bought_token_amount": {
-                            "type": "number",
-                            "description": "Tokens bought over the wallet's lifetime, in whole tokens."
-                          },
-                          "bought_usd": {
-                            "type": "number",
-                            "description": "Spent on buys over the wallet's lifetime, in USD."
-                          },
-                          "sold_token_amount": {
-                            "type": "number",
-                            "description": "Tokens sold over the wallet's lifetime, in whole tokens."
-                          },
-                          "sold_usd": {
-                            "type": "number",
-                            "description": "Received from sells over the wallet's lifetime, in USD."
-                          },
-                          "first_bought_at": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "format": "int64",
-                            "description": "First buy of this token."
-                          },
-                          "updated_at": {
-                            "type": "integer",
-                            "format": "int64",
-                            "description": "Last change to this position."
-                          },
-                          "labels": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "required": [
-                                "label",
-                                "name",
-                                "avatar_url"
-                              ],
-                              "properties": {
-                                "label": {
-                                  "type": "string",
-                                  "description": "Label, for example kol, smart, vc, dev_team, bot, or rat."
-                                },
-                                "name": {
-                                  "type": [
-                                    "string",
-                                    "null"
-                                  ],
-                                  "description": "Display name when known, for example a KOL handle."
-                                },
-                                "avatar_url": {
-                                  "type": [
-                                    "string",
-                                    "null"
-                                  ],
-                                  "format": "uri",
-                                  "description": "Avatar image URL when known."
-                                }
-                              }
-                            },
-                            "description": "Public labels on the wallet; empty for most wallets."
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/tokens/{token_address}/traders": {
-      "get": {
-        "operationId": "list_token_traders",
-        "tags": [
-          "Tokens"
-        ],
-        "summary": "List token traders",
-        "description": "Wallets that traded the token, ranked by profit or activity.\n\nlabel=kol or smart or vc needs the Pro or Scale plan.",
-        "parameters": [
-          {
-            "name": "token_address",
-            "in": "path",
-            "required": true,
-            "description": "Token mint address.",
-            "schema": {
-              "type": "string",
-              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-              "description": "Token mint address."
-            }
-          },
-          {
-            "name": "window",
-            "in": "query",
-            "required": false,
-            "description": "Only count trades in this window. Omit for all time.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "24h",
-                "3d",
-                "7d",
-                "30d"
-              ],
-              "description": "Only count trades in this window. Omit for all time."
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "required": false,
-            "description": "Field to sort by.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "realized_pnl",
-                "bought",
-                "sold",
-                "holding_value",
-                "token_balance",
-                "trade_count"
-              ],
-              "description": "Field to sort by.",
-              "default": "realized_pnl"
-            }
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "required": false,
-            "description": "Sort order.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
-              "description": "Sort order.",
-              "default": "desc"
-            }
-          },
-          {
-            "name": "position",
-            "in": "query",
-            "required": false,
-            "description": "Everyone, wallets still holding, or wallets that sold out.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "all",
-                "holding",
-                "sold"
-              ],
-              "description": "Everyone, wallets still holding, or wallets that sold out.",
-              "default": "all"
-            }
-          },
-          {
-            "name": "activity",
-            "in": "query",
-            "required": false,
-            "description": "Everyone, buyers only, or sellers only.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "all",
-                "buyers",
-                "sellers"
-              ],
-              "description": "Everyone, buyers only, or sellers only.",
-              "default": "all"
-            }
-          },
-          {
-            "name": "outcome",
-            "in": "query",
-            "required": false,
-            "description": "Everyone, wallets in profit, or wallets at a loss.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "all",
-                "profit",
-                "loss"
-              ],
-              "description": "Everyone, wallets in profit, or wallets at a loss.",
-              "default": "all"
-            }
-          },
-          {
-            "name": "entry_window",
-            "in": "query",
-            "required": false,
-            "description": "Only wallets that first bought within this long of launch; late means after the first hour.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "all",
-                "1m",
-                "5m",
-                "1h",
-                "24h",
-                "late"
-              ],
-              "description": "Only wallets that first bought within this long of launch; late means after the first hour.",
-              "default": "all"
-            }
-          },
-          {
-            "name": "min_bought_usd",
-            "in": "query",
-            "required": false,
-            "description": "Only wallets that bought at least this much, in USD.",
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "description": "Only wallets that bought at least this much, in USD."
-            }
-          },
-          {
-            "name": "min_trade_count",
-            "in": "query",
-            "required": false,
-            "description": "Only wallets with at least this many trades.",
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Only wallets with at least this many trades."
-            }
-          },
-          {
-            "name": "wallet_addresses",
-            "in": "query",
-            "required": false,
-            "description": "Only these wallets, comma-separated, up to 200.",
-            "style": "form",
-            "explode": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
-              },
-              "maxItems": 200,
-              "description": "Only these wallets, comma-separated, up to 200."
-            }
-          },
-          {
-            "name": "label",
-            "in": "query",
-            "required": false,
-            "description": "Only wallets with this label. Needs the Pro or Scale plan.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "kol",
-                "smart",
-                "vc"
-              ],
-              "description": "Only wallets with this label. Needs the Pro or Scale plan."
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "description": "Maximum rows to return.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "description": "Maximum rows to return.",
-              "default": 50
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "wallet_address",
-                          "bought_usd",
-                          "bought_sol",
-                          "bought_token_amount",
-                          "buy_count",
-                          "sold_usd",
-                          "sold_sol",
-                          "sold_token_amount",
-                          "sell_count",
-                          "trade_count",
-                          "token_balance",
-                          "first_trade_at",
-                          "last_trade_at",
-                          "realized_pnl_usd",
-                          "realized_pnl_sol",
-                          "holding_value_usd",
-                          "holding_value_sol"
-                        ],
-                        "properties": {
-                          "wallet_address": {
-                            "type": "string",
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Wallet address."
-                          },
-                          "bought_usd": {
-                            "type": "number",
-                            "description": "Total bought, in USD."
-                          },
-                          "bought_sol": {
-                            "type": "number",
-                            "description": "Total bought, in SOL."
-                          },
-                          "bought_token_amount": {
-                            "type": "number",
-                            "description": "Tokens bought, in whole tokens."
-                          },
-                          "buy_count": {
-                            "type": "integer",
-                            "description": "Buy transactions."
-                          },
-                          "sold_usd": {
-                            "type": "number",
-                            "description": "Total sold, in USD."
-                          },
-                          "sold_sol": {
-                            "type": "number",
-                            "description": "Total sold, in SOL."
-                          },
-                          "sold_token_amount": {
-                            "type": "number",
-                            "description": "Tokens sold, in whole tokens."
-                          },
-                          "sell_count": {
-                            "type": "integer",
-                            "description": "Sell transactions."
-                          },
-                          "trade_count": {
-                            "type": "integer",
-                            "description": "All transactions."
-                          },
-                          "token_balance": {
-                            "type": "number",
-                            "description": "Tokens still held from these trades, in whole tokens."
-                          },
-                          "first_trade_at": {
-                            "type": "integer",
-                            "format": "int64",
-                            "description": "First trade."
-                          },
-                          "last_trade_at": {
-                            "type": "integer",
-                            "format": "int64",
-                            "description": "Latest trade."
-                          },
-                          "realized_pnl_usd": {
-                            "type": "number",
-                            "description": "Realized profit in USD."
-                          },
-                          "realized_pnl_sol": {
-                            "type": "number",
-                            "description": "Realized profit in SOL."
-                          },
-                          "holding_value_usd": {
-                            "type": "number",
-                            "description": "Value of the remaining balance at the current price, in USD."
-                          },
-                          "holding_value_sol": {
-                            "type": "number",
-                            "description": "Value of the remaining balance at the current price, in SOL."
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/tokens/{token_address}/signals": {
-      "get": {
-        "operationId": "list_token_signal_history",
-        "tags": [
-          "Tokens"
-        ],
-        "summary": "List token signal history",
-        "description": "The latest signals that fired on the token, newest first.\n\nNeeds the Pro or Scale plan.",
-        "parameters": [
-          {
-            "name": "token_address",
-            "in": "path",
-            "required": true,
-            "description": "Token mint address.",
-            "schema": {
-              "type": "string",
-              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-              "description": "Token mint address."
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "description": "Maximum rows to return.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 50,
-              "description": "Maximum rows to return.",
-              "default": 20
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "signal_id",
-                          "token_address",
-                          "pool_address",
-                          "symbol",
-                          "name",
-                          "image_url",
-                          "dex",
-                          "tier",
-                          "kind",
-                          "kinds",
-                          "confluence",
-                          "pool_kind",
-                          "anchor",
-                          "fast_path",
-                          "alert_index",
-                          "alerted_at",
-                          "triggered_at",
-                          "detection_lag_ms",
-                          "alert_market_cap_usd",
-                          "alert_price_usd",
-                          "alert_liquidity_usd",
-                          "alert_sol_price_usd",
-                          "alert_trader_count",
-                          "first_alert_at",
-                          "first_alert_market_cap_usd",
-                          "first_alert_price_usd",
-                          "first_alert_liquidity_usd",
-                          "first_alert_sol_price_usd",
-                          "first_alert_trader_count",
-                          "current_market_cap_usd",
-                          "current_price_usd",
-                          "current_liquidity_usd",
-                          "current_trader_count",
-                          "peak_market_cap_usd",
-                          "peak_at",
-                          "token_peak_market_cap_usd",
-                          "token_peak_at",
-                          "bonding_curve_progress_pct",
-                          "entity_count",
-                          "tier_a_count",
-                          "tier_b_count",
-                          "tier_c_count",
-                          "cohort_buy_usd",
-                          "buyer_burst",
-                          "warnings",
-                          "migrated_at",
-                          "migrated_to_pool_address"
-                        ],
-                        "properties": {
-                          "signal_id": {
-                            "type": "string",
-                            "description": "Signal id, stable across alerts for the same signal."
-                          },
-                          "token_address": {
-                            "type": "string",
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Token mint address."
-                          },
-                          "pool_address": {
-                            "type": "string",
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Pool the signal fired on."
-                          },
-                          "symbol": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "Token symbol."
-                          },
-                          "name": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "Token name."
-                          },
-                          "image_url": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "format": "uri",
-                            "description": "Token image URL on the dydt CDN."
-                          },
-                          "dex": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "Venue of the pool, for example pumpfun, pumpAmm, raydium, meteora."
-                          },
-                          "tier": {
-                            "type": "string",
-                            "enum": [
-                              "high_conviction",
-                              "qualified"
-                            ],
-                            "description": "Signal quality tier."
-                          },
-                          "kind": {
-                            "type": "string",
-                            "enum": [
-                              "cohort",
-                              "momentum"
-                            ],
-                            "description": "Primary detector that fired."
-                          },
-                          "kinds": {
-                            "type": "array",
-                            "items": {
-                              "type": "string",
-                              "enum": [
-                                "cohort",
-                                "momentum"
-                              ]
-                            },
-                            "description": "Every detector that fired for this signal."
-                          },
-                          "confluence": {
-                            "type": "boolean",
-                            "description": "True when more than one detector agreed."
-                          },
-                          "pool_kind": {
-                            "type": "string",
-                            "enum": [
-                              "bonding_curve",
-                              "amm"
-                            ],
-                            "description": "Pool model at the time of the alert."
-                          },
-                          "anchor": {
-                            "type": "boolean",
-                            "description": "True when this is the first signal on the token."
-                          },
-                          "fast_path": {
-                            "type": "boolean",
-                            "description": "True when two or more tier A wallets bought within seconds of each other."
-                          },
-                          "alert_index": {
-                            "type": "integer",
-                            "description": "Alert number within the signal, from 1."
-                          },
-                          "alerted_at": {
-                            "type": "array",
-                            "items": {
-                              "type": "integer",
-                              "format": "int64"
-                            },
-                            "description": "Time of every alert for this signal."
-                          },
-                          "triggered_at": {
-                            "type": "integer",
-                            "format": "int64",
-                            "description": "Trade that triggered this alert."
-                          },
-                          "detection_lag_ms": {
-                            "type": "integer",
-                            "description": "Milliseconds from that trade to the alert."
-                          },
-                          "alert_market_cap_usd": {
-                            "type": "number",
-                            "description": "Market cap at this alert."
-                          },
-                          "alert_price_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Price at this alert."
-                          },
-                          "alert_liquidity_usd": {
-                            "type": "number",
-                            "description": "Liquidity at this alert."
-                          },
-                          "alert_sol_price_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "SOL price at this alert."
-                          },
-                          "alert_trader_count": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "description": "Distinct traders at this alert."
-                          },
-                          "first_alert_at": {
-                            "type": "integer",
-                            "format": "int64",
-                            "description": "First alert of this signal."
-                          },
-                          "first_alert_market_cap_usd": {
-                            "type": "number",
-                            "description": "Market cap at the first alert."
-                          },
-                          "first_alert_price_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Price at the first alert."
-                          },
-                          "first_alert_liquidity_usd": {
-                            "type": "number",
-                            "description": "Liquidity at the first alert."
-                          },
-                          "first_alert_sol_price_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "SOL price at the first alert."
-                          },
-                          "first_alert_trader_count": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "description": "Distinct traders at the first alert."
-                          },
-                          "current_market_cap_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Market cap now."
-                          },
-                          "current_price_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Price now."
-                          },
-                          "current_liquidity_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Liquidity now."
-                          },
-                          "current_trader_count": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "description": "Distinct traders now."
-                          },
-                          "peak_market_cap_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Highest market cap since this alert."
-                          },
-                          "peak_at": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "format": "int64",
-                            "description": "Time of that peak."
-                          },
-                          "token_peak_market_cap_usd": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Highest market cap since the first alert."
-                          },
-                          "token_peak_at": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "format": "int64",
-                            "description": "Time of that peak."
-                          },
-                          "bonding_curve_progress_pct": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
-                            "description": "Bonding curve completion at this alert, 0 to 100."
-                          },
-                          "entity_count": {
-                            "type": "integer",
-                            "description": "Distinct buyer entities behind the signal."
-                          },
-                          "tier_a_count": {
-                            "type": "integer",
-                            "description": "Tier A wallets among them."
-                          },
-                          "tier_b_count": {
-                            "type": "integer",
-                            "description": "Tier B wallets among them."
-                          },
-                          "tier_c_count": {
-                            "type": "integer",
-                            "description": "Tier C wallets among them."
-                          },
-                          "cohort_buy_usd": {
-                            "type": "number",
-                            "description": "Combined buys by those entities."
-                          },
-                          "buyer_burst": {
-                            "type": "number",
-                            "description": "Unique buyers in the 10-second detection window relative to the 5-minute buyer rate; 1 is normal."
-                          },
-                          "warnings": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Caveats, for example dev_share_unknown."
-                          },
-                          "migrated_at": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "format": "int64",
-                            "description": "When the token migrated off its bonding curve."
-                          },
-                          "migrated_to_pool_address": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "AMM pool it migrated to."
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/tokens/{token_address}/bonding-curve": {
-      "get": {
-        "operationId": "get_token_bonding_curve",
-        "tags": [
-          "Tokens"
-        ],
-        "summary": "Get token bonding curve",
-        "description": "Latest bonding-curve reserves for a token launched on a curve.\n\nReturns 404 for tokens without a bonding curve. After migration the state stops updating; use the AMM pool instead.",
-        "parameters": [
-          {
-            "name": "token_address",
-            "in": "path",
-            "required": true,
-            "description": "Token mint address.",
-            "schema": {
-              "type": "string",
-              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-              "description": "Token mint address."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object",
-                      "required": [
-                        "token_address",
-                        "virtual_token_reserves_raw",
-                        "virtual_sol_reserves_lamports",
-                        "real_token_reserves_raw",
-                        "real_sol_reserves_lamports",
-                        "total_supply",
-                        "completed",
-                        "creator_address"
-                      ],
-                      "properties": {
-                        "token_address": {
-                          "type": "string",
-                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                          "description": "Token mint address."
-                        },
-                        "virtual_token_reserves_raw": {
-                          "type": "string",
-                          "description": "Virtual token reserves, raw units."
-                        },
-                        "virtual_sol_reserves_lamports": {
-                          "type": "string",
-                          "description": "Virtual SOL reserves, in lamports."
-                        },
-                        "real_token_reserves_raw": {
-                          "type": "string",
-                          "description": "Tokens left to sell on the curve, raw units."
-                        },
-                        "real_sol_reserves_lamports": {
-                          "type": "string",
-                          "description": "SOL held by the curve, in lamports."
-                        },
-                        "total_supply": {
-                          "type": "string",
-                          "description": "Total supply in whole tokens."
-                        },
-                        "completed": {
-                          "type": "boolean",
-                          "description": "True once the curve has filled and the token migrated."
-                        },
-                        "creator_address": {
-                          "type": "string",
-                          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                          "description": "Wallet that created the token."
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
     "/pools": {
       "get": {
         "operationId": "list_pools",
@@ -4164,543 +4164,13 @@
         }
       }
     },
-    "/pools/metrics": {
-      "get": {
-        "operationId": "list_pools_metrics",
-        "tags": [
-          "Pools"
-        ],
-        "summary": "List pools metrics",
-        "description": "Metrics for several pools in one call, up to 50.",
-        "parameters": [
-          {
-            "name": "pool_addresses",
-            "in": "query",
-            "required": true,
-            "description": "Pools to fetch, comma-separated, up to 50.",
-            "style": "form",
-            "explode": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
-              },
-              "maxItems": 50,
-              "description": "Pools to fetch, comma-separated, up to 50."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "code",
-                    "error",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "const": 0
-                    },
-                    "error": {
-                      "type": "null"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "pool_address",
-                          "token_address",
-                          "updated_at",
-                          "last_slot",
-                          "last_tx_index",
-                          "totals",
-                          "windowed"
-                        ],
-                        "properties": {
-                          "pool_address": {
-                            "type": "string",
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Pool address."
-                          },
-                          "token_address": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-                            "description": "Token mint address."
-                          },
-                          "updated_at": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ],
-                            "format": "int64",
-                            "description": "Last update."
-                          },
-                          "last_slot": {
-                            "type": "integer",
-                            "description": "Slot of the last trade included."
-                          },
-                          "last_tx_index": {
-                            "type": "integer",
-                            "description": "Transaction index of that trade in its slot."
-                          },
-                          "totals": {
-                            "type": [
-                              "object",
-                              "null"
-                            ],
-                            "required": [
-                              "volume_quote",
-                              "volume_usd",
-                              "buy_volume_quote",
-                              "buy_volume_usd",
-                              "sell_volume_quote",
-                              "sell_volume_usd",
-                              "trade_count",
-                              "buy_count",
-                              "sell_count",
-                              "ath_market_cap_quote",
-                              "ath_market_cap_usd",
-                              "first_trade_at",
-                              "launch_price_quote",
-                              "launch_price_usd",
-                              "price_change_pct_quote",
-                              "price_change_pct_usd",
-                              "trader_count",
-                              "buyer_count",
-                              "seller_count",
-                              "holder_count",
-                              "total_supply",
-                              "circulating_supply",
-                              "lp_burned_pct",
-                              "dev_pct",
-                              "sniper_pct",
-                              "bundle_pct",
-                              "bundler_count",
-                              "top10_pct",
-                              "mint_revoked",
-                              "freeze_revoked",
-                              "dex_paid",
-                              "bonding_curve_gain_5m_pct"
-                            ],
-                            "properties": {
-                              "volume_quote": {
-                                "type": "number",
-                                "description": "All-time volume in the quote asset."
-                              },
-                              "volume_usd": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "All-time volume in USD."
-                              },
-                              "buy_volume_quote": {
-                                "type": "number",
-                                "description": "All-time buy volume in the quote asset."
-                              },
-                              "buy_volume_usd": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "All-time buy volume in USD."
-                              },
-                              "sell_volume_quote": {
-                                "type": "number",
-                                "description": "All-time sell volume in the quote asset."
-                              },
-                              "sell_volume_usd": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "All-time sell volume in USD."
-                              },
-                              "trade_count": {
-                                "type": "integer",
-                                "description": "All-time trades."
-                              },
-                              "buy_count": {
-                                "type": "integer",
-                                "description": "All-time buys."
-                              },
-                              "sell_count": {
-                                "type": "integer",
-                                "description": "All-time sells."
-                              },
-                              "ath_market_cap_quote": {
-                                "type": "number",
-                                "description": "Highest market cap seen, in the quote asset."
-                              },
-                              "ath_market_cap_usd": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Highest market cap seen, in USD."
-                              },
-                              "first_trade_at": {
-                                "type": [
-                                  "integer",
-                                  "null"
-                                ],
-                                "format": "int64",
-                                "description": "First trade."
-                              },
-                              "launch_price_quote": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "First traded price in the quote asset."
-                              },
-                              "launch_price_usd": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "First traded price in USD."
-                              },
-                              "price_change_pct_quote": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Price change since launch in quote terms."
-                              },
-                              "price_change_pct_usd": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Price change since launch in USD terms."
-                              },
-                              "trader_count": {
-                                "type": "integer",
-                                "description": "Distinct wallets that have traded the token (approximate)."
-                              },
-                              "buyer_count": {
-                                "type": "integer",
-                                "description": "Distinct wallets that have bought (approximate)."
-                              },
-                              "seller_count": {
-                                "type": "integer",
-                                "description": "Distinct wallets that have sold (approximate)."
-                              },
-                              "holder_count": {
-                                "type": [
-                                  "integer",
-                                  "null"
-                                ],
-                                "description": "Wallets holding the token now."
-                              },
-                              "total_supply": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Total supply in whole tokens."
-                              },
-                              "circulating_supply": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Circulating supply in whole tokens."
-                              },
-                              "lp_burned_pct": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Share of LP tokens burned and still locked, 0 to 100."
-                              },
-                              "dev_pct": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Share of supply held by the creator, 0 to 100."
-                              },
-                              "sniper_pct": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Share of supply held by sniper wallets, 0 to 100."
-                              },
-                              "bundle_pct": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Share of supply held by bundled launch buyers, 0 to 100."
-                              },
-                              "bundler_count": {
-                                "type": [
-                                  "integer",
-                                  "null"
-                                ],
-                                "description": "Wallets that bought in bundled launch transactions."
-                              },
-                              "top10_pct": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Share of supply held by the 10 largest holders, 0 to 100."
-                              },
-                              "mint_revoked": {
-                                "type": [
-                                  "boolean",
-                                  "null"
-                                ],
-                                "description": "Whether the mint authority is revoked."
-                              },
-                              "freeze_revoked": {
-                                "type": [
-                                  "boolean",
-                                  "null"
-                                ],
-                                "description": "Whether the freeze authority is revoked."
-                              },
-                              "dex_paid": {
-                                "type": [
-                                  "boolean",
-                                  "null"
-                                ],
-                                "description": "Whether a DEX Screener profile was paid for."
-                              },
-                              "bonding_curve_gain_5m_pct": {
-                                "type": [
-                                  "number",
-                                  "null"
-                                ],
-                                "description": "Bonding curve progress gained in the last 5 minutes."
-                              }
-                            },
-                            "description": "All-time aggregates and holder structure; null until first computed."
-                          },
-                          "windowed": {
-                            "type": "object",
-                            "required": [
-                              "t",
-                              "pp",
-                              "v",
-                              "vb",
-                              "vs",
-                              "tc",
-                              "bc",
-                              "sc",
-                              "m",
-                              "bm",
-                              "sm"
-                            ],
-                            "properties": {
-                              "t": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string",
-                                  "enum": [
-                                    "1m",
-                                    "5m",
-                                    "1h",
-                                    "6h",
-                                    "24h"
-                                  ]
-                                },
-                                "description": "Windows present, in order. Every other array has one entry per window."
-                              },
-                              "pp": {
-                                "type": "array",
-                                "items": {
-                                  "type": "array",
-                                  "prefixItems": [
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    },
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    }
-                                  ],
-                                  "minItems": 2,
-                                  "maxItems": 2
-                                },
-                                "description": "Price change in percent, as [quote, usd]."
-                              },
-                              "v": {
-                                "type": "array",
-                                "items": {
-                                  "type": "array",
-                                  "prefixItems": [
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    },
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    }
-                                  ],
-                                  "minItems": 2,
-                                  "maxItems": 2
-                                },
-                                "description": "Volume, as [quote, usd]."
-                              },
-                              "vb": {
-                                "type": "array",
-                                "items": {
-                                  "type": "array",
-                                  "prefixItems": [
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    },
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    }
-                                  ],
-                                  "minItems": 2,
-                                  "maxItems": 2
-                                },
-                                "description": "Buy volume, as [quote, usd]."
-                              },
-                              "vs": {
-                                "type": "array",
-                                "items": {
-                                  "type": "array",
-                                  "prefixItems": [
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    },
-                                    {
-                                      "type": [
-                                        "number",
-                                        "null"
-                                      ]
-                                    }
-                                  ],
-                                  "minItems": 2,
-                                  "maxItems": 2
-                                },
-                                "description": "Sell volume, as [quote, usd]."
-                              },
-                              "tc": {
-                                "type": "array",
-                                "items": {
-                                  "type": "integer"
-                                },
-                                "description": "Trades."
-                              },
-                              "bc": {
-                                "type": "array",
-                                "items": {
-                                  "type": "integer"
-                                },
-                                "description": "Buys."
-                              },
-                              "sc": {
-                                "type": "array",
-                                "items": {
-                                  "type": "integer"
-                                },
-                                "description": "Sells."
-                              },
-                              "m": {
-                                "type": "array",
-                                "items": {
-                                  "type": "integer"
-                                },
-                                "description": "Distinct traders."
-                              },
-                              "bm": {
-                                "type": "array",
-                                "items": {
-                                  "type": "integer"
-                                },
-                                "description": "Distinct buyers."
-                              },
-                              "sm": {
-                                "type": "array",
-                                "items": {
-                                  "type": "integer"
-                                },
-                                "description": "Distinct sellers."
-                              }
-                            },
-                            "description": "Windowed metrics in compact columnar form: t lists the windows and every other array holds one entry per window at the same index."
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error"
-          },
-          "404": {
-            "$ref": "#/components/responses/Error"
-          },
-          "429": {
-            "$ref": "#/components/responses/Error"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error"
-          },
-          "503": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
     "/pools/{pool_address}": {
       "get": {
         "operationId": "get_pool",
         "tags": [
           "Pools"
         ],
-        "summary": "Get pool",
+        "summary": "Get a pool",
         "description": "One pool with its base and quote tokens and, after migration, the pool that replaced it.",
         "parameters": [
           {
@@ -5791,13 +5261,543 @@
         }
       }
     },
+    "/pools/metrics": {
+      "get": {
+        "operationId": "list_pools_metrics",
+        "tags": [
+          "Pools"
+        ],
+        "summary": "Get metrics for many pools",
+        "description": "Metrics for several pools in one call, up to 50.",
+        "parameters": [
+          {
+            "name": "pool_addresses",
+            "in": "query",
+            "required": true,
+            "description": "Pools to fetch, comma-separated, up to 50.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+              },
+              "maxItems": 50,
+              "description": "Pools to fetch, comma-separated, up to 50."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "pool_address",
+                          "token_address",
+                          "updated_at",
+                          "last_slot",
+                          "last_tx_index",
+                          "totals",
+                          "windowed"
+                        ],
+                        "properties": {
+                          "pool_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Pool address."
+                          },
+                          "token_address": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Token mint address."
+                          },
+                          "updated_at": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "format": "int64",
+                            "description": "Last update."
+                          },
+                          "last_slot": {
+                            "type": "integer",
+                            "description": "Slot of the last trade included."
+                          },
+                          "last_tx_index": {
+                            "type": "integer",
+                            "description": "Transaction index of that trade in its slot."
+                          },
+                          "totals": {
+                            "type": [
+                              "object",
+                              "null"
+                            ],
+                            "required": [
+                              "volume_quote",
+                              "volume_usd",
+                              "buy_volume_quote",
+                              "buy_volume_usd",
+                              "sell_volume_quote",
+                              "sell_volume_usd",
+                              "trade_count",
+                              "buy_count",
+                              "sell_count",
+                              "ath_market_cap_quote",
+                              "ath_market_cap_usd",
+                              "first_trade_at",
+                              "launch_price_quote",
+                              "launch_price_usd",
+                              "price_change_pct_quote",
+                              "price_change_pct_usd",
+                              "trader_count",
+                              "buyer_count",
+                              "seller_count",
+                              "holder_count",
+                              "total_supply",
+                              "circulating_supply",
+                              "lp_burned_pct",
+                              "dev_pct",
+                              "sniper_pct",
+                              "bundle_pct",
+                              "bundler_count",
+                              "top10_pct",
+                              "mint_revoked",
+                              "freeze_revoked",
+                              "dex_paid",
+                              "bonding_curve_gain_5m_pct"
+                            ],
+                            "properties": {
+                              "volume_quote": {
+                                "type": "number",
+                                "description": "All-time volume in the quote asset."
+                              },
+                              "volume_usd": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "All-time volume in USD."
+                              },
+                              "buy_volume_quote": {
+                                "type": "number",
+                                "description": "All-time buy volume in the quote asset."
+                              },
+                              "buy_volume_usd": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "All-time buy volume in USD."
+                              },
+                              "sell_volume_quote": {
+                                "type": "number",
+                                "description": "All-time sell volume in the quote asset."
+                              },
+                              "sell_volume_usd": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "All-time sell volume in USD."
+                              },
+                              "trade_count": {
+                                "type": "integer",
+                                "description": "All-time trades."
+                              },
+                              "buy_count": {
+                                "type": "integer",
+                                "description": "All-time buys."
+                              },
+                              "sell_count": {
+                                "type": "integer",
+                                "description": "All-time sells."
+                              },
+                              "ath_market_cap_quote": {
+                                "type": "number",
+                                "description": "Highest market cap seen, in the quote asset."
+                              },
+                              "ath_market_cap_usd": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Highest market cap seen, in USD."
+                              },
+                              "first_trade_at": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "format": "int64",
+                                "description": "First trade."
+                              },
+                              "launch_price_quote": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "First traded price in the quote asset."
+                              },
+                              "launch_price_usd": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "First traded price in USD."
+                              },
+                              "price_change_pct_quote": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Price change since launch in quote terms."
+                              },
+                              "price_change_pct_usd": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Price change since launch in USD terms."
+                              },
+                              "trader_count": {
+                                "type": "integer",
+                                "description": "Distinct wallets that have traded the token (approximate)."
+                              },
+                              "buyer_count": {
+                                "type": "integer",
+                                "description": "Distinct wallets that have bought (approximate)."
+                              },
+                              "seller_count": {
+                                "type": "integer",
+                                "description": "Distinct wallets that have sold (approximate)."
+                              },
+                              "holder_count": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "Wallets holding the token now."
+                              },
+                              "total_supply": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Total supply in whole tokens."
+                              },
+                              "circulating_supply": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Circulating supply in whole tokens."
+                              },
+                              "lp_burned_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of LP tokens burned and still locked, 0 to 100."
+                              },
+                              "dev_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by the creator, 0 to 100."
+                              },
+                              "sniper_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by sniper wallets, 0 to 100."
+                              },
+                              "bundle_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by bundled launch buyers, 0 to 100."
+                              },
+                              "bundler_count": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "Wallets that bought in bundled launch transactions."
+                              },
+                              "top10_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Share of supply held by the 10 largest holders, 0 to 100."
+                              },
+                              "mint_revoked": {
+                                "type": [
+                                  "boolean",
+                                  "null"
+                                ],
+                                "description": "Whether the mint authority is revoked."
+                              },
+                              "freeze_revoked": {
+                                "type": [
+                                  "boolean",
+                                  "null"
+                                ],
+                                "description": "Whether the freeze authority is revoked."
+                              },
+                              "dex_paid": {
+                                "type": [
+                                  "boolean",
+                                  "null"
+                                ],
+                                "description": "Whether a DEX Screener profile was paid for."
+                              },
+                              "bonding_curve_gain_5m_pct": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ],
+                                "description": "Bonding curve progress gained in the last 5 minutes."
+                              }
+                            },
+                            "description": "All-time aggregates and holder structure; null until first computed."
+                          },
+                          "windowed": {
+                            "type": "object",
+                            "required": [
+                              "t",
+                              "pp",
+                              "v",
+                              "vb",
+                              "vs",
+                              "tc",
+                              "bc",
+                              "sc",
+                              "m",
+                              "bm",
+                              "sm"
+                            ],
+                            "properties": {
+                              "t": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "1m",
+                                    "5m",
+                                    "1h",
+                                    "6h",
+                                    "24h"
+                                  ]
+                                },
+                                "description": "Windows present, in order. Every other array has one entry per window."
+                              },
+                              "pp": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    },
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    }
+                                  ],
+                                  "minItems": 2,
+                                  "maxItems": 2
+                                },
+                                "description": "Price change in percent, as [quote, usd]."
+                              },
+                              "v": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    },
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    }
+                                  ],
+                                  "minItems": 2,
+                                  "maxItems": 2
+                                },
+                                "description": "Volume, as [quote, usd]."
+                              },
+                              "vb": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    },
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    }
+                                  ],
+                                  "minItems": 2,
+                                  "maxItems": 2
+                                },
+                                "description": "Buy volume, as [quote, usd]."
+                              },
+                              "vs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    },
+                                    {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ]
+                                    }
+                                  ],
+                                  "minItems": 2,
+                                  "maxItems": 2
+                                },
+                                "description": "Sell volume, as [quote, usd]."
+                              },
+                              "tc": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                },
+                                "description": "Trades."
+                              },
+                              "bc": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                },
+                                "description": "Buys."
+                              },
+                              "sc": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                },
+                                "description": "Sells."
+                              },
+                              "m": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                },
+                                "description": "Distinct traders."
+                              },
+                              "bm": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                },
+                                "description": "Distinct buyers."
+                              },
+                              "sm": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                },
+                                "description": "Distinct sellers."
+                              }
+                            },
+                            "description": "Windowed metrics in compact columnar form: t lists the windows and every other array holds one entry per window at the same index."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
     "/pools/{pool_address}/candles": {
       "get": {
         "operationId": "list_pool_candles",
         "tags": [
           "Pools"
         ],
-        "summary": "List pool candles",
+        "summary": "Get candles",
         "description": "OHLCV candles for charting a pool, oldest first.\n\nIntervals without trades are omitted; fill gaps client-side.",
         "parameters": [
           {
@@ -6379,7 +6379,7 @@
         "tags": [
           "Wallets"
         ],
-        "summary": "List wallets",
+        "summary": "List labeled wallets",
         "description": "Wallets carrying a public label: KOLs, smart money, VCs, dev teams, bots, and rat traders.\n\nNeeds the Pro or Scale plan.\n\nOrdered by wallet address so pages stay stable. Labels refresh every minute.",
         "parameters": [
           {
@@ -7557,7 +7557,7 @@
         "tags": [
           "Wallets"
         ],
-        "summary": "Get wallet leaderboard",
+        "summary": "Get the leaderboard",
         "description": "Top wallets over a window, ranked by realized PnL or another metric.\n\nscope=kol needs the Pro or Scale plan.\n\nRankings are cached for 30 seconds.",
         "parameters": [
           {
@@ -9093,7 +9093,7 @@
         "tags": [
           "Wallets"
         ],
-        "summary": "Get wallet daily PnL",
+        "summary": "Get daily PnL",
         "description": "Day-by-day realized PnL, trade counts, and volume for one calendar month in UTC.",
         "parameters": [
           {
@@ -9297,7 +9297,7 @@
         "tags": [
           "Wallets"
         ],
-        "summary": "List wallet created tokens",
+        "summary": "List created tokens",
         "description": "Tokens launched by a wallet, with their market metrics.",
         "parameters": [
           {
