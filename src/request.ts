@@ -47,13 +47,21 @@ function checkNumber(name: string, value: string, schema: ParameterSchema): stri
   return null;
 }
 
+const SOLANA_ADDRESS_ALPHABET = "1-9A-HJ-NP-Za-km-z";
+
+function patternProblem(name: string, pattern: string): string {
+  if (pattern.includes(SOLANA_ADDRESS_ALPHABET))
+    return `--${name} is not a valid Solana address (32 to 44 base58 characters)`;
+  return `--${name} is not valid (expected ${pattern})`;
+}
+
 function checkValue(param: Parameter, value: string): string | null {
   const schema = valueSchema(param);
   const allowed = schema.enum?.map(String);
   if (allowed && !allowed.includes(value))
     return `--${param.name} must be one of: ${allowed.join(", ")}`;
   if (schema.pattern && !new RegExp(schema.pattern).test(value))
-    return `--${param.name} is not valid (expected ${schema.pattern})`;
+    return patternProblem(param.name, schema.pattern);
   if (schema.type === "integer" || schema.type === "number")
     return checkNumber(param.name, value, schema);
   if (schema.type === "boolean" && value !== "true" && value !== "false")
@@ -80,10 +88,16 @@ function defaultValues(param: Parameter): string[] {
   return [String(param.schema.default)];
 }
 
+function missingProblem(param: Parameter, command: string): string {
+  if (param.in === "path")
+    return `missing <${param.name}>. Usage: dydt ${command} <${param.name}>`;
+  return `--${param.name} is required for ${command}. Run: dydt help ${command}`;
+}
+
 export function validatedValues(param: Parameter, input: ParamValues, command: string): string[] {
   const given = splitValues(param, input[param.name] ?? []);
   if (given.length === 0 && param.required && param.schema.default === undefined)
-    throw new UsageError(`--${param.name} is required for ${command}`);
+    throw new UsageError(missingProblem(param, command));
   const values = given.length === 0 && param.required ? defaultValues(param) : given;
   if (values.length > 1 && !isArrayParam(param)) throw new UsageError(`--${param.name} takes one value`);
   const maxItems = param.schema.maxItems;

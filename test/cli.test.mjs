@@ -65,8 +65,8 @@ test("required parameters with a default are filled in", () => {
 
 test("bad input fails locally before any request", () => {
   const cases = [
-    [op("wallet-stats"), { wallet_address: ["nope"] }, /not valid/],
-    [op("wallet-stats"), {}, /required/],
+    [op("wallet-stats"), { wallet_address: ["nope"] }, /not a valid Solana address/],
+    [op("wallet-stats"), {}, /missing <wallet_address>/],
     [op("wallet-leaderboard"), { scope: ["tracked"] }, /one of/],
     [op("wallet-activity"), { label: ["bot"] }, /one of/],
     [op("wallet-trades"), { wallet_address: [WALLET], limit: ["201"] }, /at most 200/],

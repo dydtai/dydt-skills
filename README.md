@@ -4,66 +4,146 @@
 
 # dydt CLI and agent skills
 
-**Solana memecoin market data, wallet PnL, KOL trades, and live streams for AI agents.**
+**Ask your AI agent about any Solana token or wallet, and get answers from live on-chain data.**
 
 [![npm](https://img.shields.io/npm/v/dydt-cli?color=16a34a)](https://www.npmjs.com/package/dydt-cli)
 [![node](https://img.shields.io/node/v/dydt-cli)](https://nodejs.org)
 [![license](https://img.shields.io/npm/l/dydt-cli)](LICENSE)
-[![GitHub](https://img.shields.io/badge/GitHub-dydtai%2Fdydt--skills-111)](https://github.com/dydtai/dydt-skills)
 
-[Website](https://dydt.ai) · [Agent setup guide](https://dydt.ai/developers/agents) · [API docs](https://dydt.ai/developers) · [Get an API key](https://dydt.ai/developers/keys) · [Pricing](https://dydt.ai/developers/billing)
+[Setup guide](https://dydt.ai/developers/agents) · [Get a free API key](https://dydt.ai/developers/keys) · [API docs](https://dydt.ai/developers) · [Pricing](https://dydt.ai/developers/billing)
 
 </div>
 
 ---
 
-## What this is
+## What it does
 
-Two pieces that work together:
+You ask your AI agent a question in plain words, such as *"Is this token safe?"* or *"What are KOLs buying today?"*. The agent runs the `dydt` command to fetch live data from dydt, then explains what it found.
 
-- **`dydt` CLI.** One command for every [dydt Data API](https://dydt.ai/developers) endpoint, plus `dydt watch` for live WebSocket streams. Commands, options, and allowed values come from the live API spec and are checked before any request is sent.
-- **Agent skills.** Eleven skills that tell Claude Code, Cursor, Codex, OpenCode, Windsurf, Gemini CLI, and other agents which command answers which question, and how to read the answer correctly.
+It is **read-only**: it cannot trade, move funds, or touch your wallet.
 
-Ask your agent *"run a rug check on this token"*, *"what are KOLs buying today?"*, or *"how has this wallet done over 30 days?"* and it runs the right `dydt` commands and explains the result.
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/how-it-works.png" alt="How it works: your agent uses the dydt skills to pick a dydt command, and the command reads the dydt Data API" width="1280">
 
-**Read-only by design.** Nothing here holds wallet keys, signs transactions, or places trades.
+## What you need
 
-<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/how-it-works.png" alt="How it works: your agent uses the dydt skills to pick a dydt CLI command, and the CLI calls the read-only dydt Data API" width="1280">
+- **An AI coding agent:** Claude Code, Cursor, Codex, Windsurf, Gemini CLI, GitHub Copilot, Cline, or OpenCode. Chat websites such as claude.ai cannot run commands, so they cannot use dydt.
+- **Node.js 22.4 or newer:** check with `node --version`. If it is missing or older, install the LTS version from [nodejs.org](https://nodejs.org).
+- **A free dydt API key:** create one at [dydt.ai/developers/keys](https://dydt.ai/developers/keys). No payment needed.
 
-## Why dydt
+## Set it up in 4 steps
 
-| | |
-|---|---|
-| **Token risk data** | Mint and freeze authorities, Token-2022 transfer fees, top-10 / developer / sniper / bundle share of supply, insider and fresh-wallet share, LP burn, and the creator's past launches, from dydt's own Solana indexer. |
-| **Wallet PnL for any address** | Realized and unrealized PnL with lot accounting, win rate, streaks, best and worst day, open positions, trade history with PnL on every sell, and day-by-day results. Not limited to dydt users. |
-| **KOL tracking** | Hundreds of labeled KOL wallets, their buys and sells as they happen, and a KOL leaderboard. |
-| **Discovery feeds** | New pairs, popular, top gainers, almost-bonded launchpad tokens, freshly migrated tokens, and tokenized stocks, with server-side filters on market cap, liquidity, holders, and supply concentration. |
-| **Signals** | dydt token signals (groups of tiered wallets buying the same token) and wallet signals (tracked wallets closing profitable trades). |
-| **Live streams** | Pool trades, candles, live pool metrics, ranking changes, wallet activity, signals, and token posts on X, over one WebSocket. |
-| **Safe for agents** | Token names and links are attacker-controlled text. The CLI strips hidden characters and neutralizes instruction-like text before your agent sees it. |
+Run these in your terminal (Terminal on macOS, PowerShell on Windows, or the terminal panel in Cursor or VS Code).
 
-## Quick start
+**1. Install the `dydt` command**
 
 ```bash
-npm install -g dydt-cli                  # Node 22.4 or newer
-npx skills add dydtai/dydt-skills        # pick your agent when asked
-dydt config set <your-api-key>           # key from https://dydt.ai/developers/keys
-dydt sol-price                           # {"price_usd": 121.13} means it works
+npm install -g dydt-cli
 ```
 
-Then ask your agent something like *"what is trending on Solana in the last hour?"*
+**2. Add the dydt skills to your agent**
 
-### Quick start for AI agents
+```bash
+npx skills add dydtai/dydt-skills -g
+```
 
-If you are an agent setting this up for a user, do this:
+Pick your agent from the list when asked. Skills are short instruction files that tell your agent which `dydt` command answers which question.
 
-1. Run `dydt --version`. If the command is missing, run `npm install -g dydt-cli`.
-2. Run `dydt config check`. Exit code 0 means a key is already configured; you are done.
-3. Otherwise tell the user: *"Create a free API key at https://dydt.ai/developers/keys and paste it here."* Wait for the key.
-4. Run `dydt config set <key>`, then `dydt sol-price` to confirm.
-5. Never print the full key back, and never write it into project files or commits.
+**3. Save your API key**
 
-## Install the skills in your agent
+```bash
+dydt config set <your-api-key>
+```
+
+The key is saved on your computer only.
+
+**4. Check that it works**
+
+```bash
+dydt sol-price
+```
+
+You should see something like `{"price_usd": 121.13}`. Restart your agent and ask your first question.
+
+> **Prefer to let your agent do it?** Paste this into your agent:
+> *"Set up dydt for me from https://github.com/dydtai/dydt-skills: install the dydt-cli npm package, install the dydt skills globally with npx skills add dydtai/dydt-skills -g, ask me for my API key and save it with dydt config set, then show me the SOL price to confirm it works."*
+
+## Things to ask
+
+```
+Is <token address> safe? Give me the red flags.
+Find the real WIF token, not a copycat, and show its top holders.
+What is trending on Solana in the last hour with more than $50k liquidity?
+Which pump.fun tokens are about to graduate?
+How has wallet <address> done over the last 30 days? Was it one lucky trade?
+Who created <token address>, and what happened to their other launches?
+What are KOLs buying in the last 24 hours? Group it by token.
+Write me a morning brief of the Solana memecoin market.
+```
+
+Copy a token or wallet address from its page on [dydt.ai](https://dydt.ai). If your agent answers without using dydt, start your question with *"Using dydt, …"*.
+
+## What your agent can look up
+
+| Skill | Ask about | Plan |
+|---|---|---|
+| `dydt-token` | A token's details, supply, holders, pools, and launch curve | Free |
+| `dydt-token-check` | Red flags on a token, each backed by the data it came from | Free |
+| `dydt-dev-check` | Who launched a token and how their other launches went | Free |
+| `dydt-market` | Charts, prices, trades, and top traders | Free |
+| `dydt-discover` | New, trending, gaining, and about-to-graduate tokens | Free |
+| `dydt-wallet` | Any wallet's profit and loss, holdings, and trades | Free |
+| `dydt-brief` | A market summary | Free; KOL and signal parts need Pro |
+| `dydt-setup` | Installing, saving the key, plans, and fixing errors | Free |
+| `dydt-watch` | Watching a token or wallet live for a few minutes | Starter and up |
+| `dydt-smart-money` | What KOLs and labeled wallets are buying and selling | Pro and Scale |
+| `dydt-signals` | dydt token signals | Pro and Scale |
+
+## Plans
+
+| | Free | Starter | Pro | Scale |
+|---|---|---|---|---|
+| Tokens, pools, trades, wallets, discovery | ✓ | ✓ | ✓ | ✓ |
+| Live monitoring (`dydt watch`) | | ✓ | ✓ | ✓ |
+| KOL trades, labeled wallets, signals | | | ✓ | ✓ |
+
+Start on Free. If you ask for something your plan does not include, your agent tells you which plan does. Limits and prices are on the [pricing page](https://dydt.ai/developers/billing); pay in USDC or SOL.
+
+## Safety
+
+- **Read-only.** There is no command that trades, transfers, or signs. dydt never asks for a seed phrase or private key; anyone who does is trying to steal from you.
+- **Your key stays with you.** It is stored on your computer (file mode 600) and sent only to dydt.
+- **Pinned hosts.** Requests go only to `data.dydt.ai`.
+- **Protected from tricks in token names.** Anyone can write a token's name and description. The CLI strips hidden characters and replaces instruction-like text with `[filtered]` before your agent reads it.
+- **Not financial advice.** Answers report what dydt observed on chain. Labels and signals can be wrong, and memecoins are high risk.
+
+## If something goes wrong
+
+| Problem | Fix |
+|---|---|
+| `dydt: command not found` | Run step 1 again, then open a new terminal. Check `node --version` shows 22.4 or newer. |
+| `No API key` | Run `dydt config set <your-api-key>` with a key from [dydt.ai/developers/keys](https://dydt.ai/developers/keys). |
+| HTTP 401 | The key is mistyped or was deleted. Create a new one and save it again. |
+| HTTP 403 or code 4033 | Your plan does not include that data. Your agent says which plan does. |
+| HTTP 429 | Too many requests, or the monthly allowance is used up. Wait a minute or upgrade. |
+| Stream closes with 4402 | Live monitoring needs Starter or higher. |
+| The agent answers without dydt | Restart the agent after step 2, and start your question with *"Using dydt, …"*. |
+
+## Update
+
+```bash
+npm install -g dydt-cli@latest
+npx skills add dydtai/dydt-skills -g
+```
+
+---
+
+## For developers
+
+The `dydt` command works on its own too, in scripts or your terminal. There is one command for every [dydt Data API](https://dydt.ai/developers) endpoint, plus `dydt watch` for live streams. Commands and options come from the live API spec and are checked before any request is sent.
+
+<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/commands.png" alt="Output of dydt list: every command grouped by tokens, pools, trades, rankings, signals, wallets, and market" width="1280">
+
+### Install the skills for one agent
 
 The skills live in [`skills/`](skills). Each one is self-contained, so you can install all of them or only the ones you need.
 
@@ -81,48 +161,23 @@ The skills live in [`skills/`](skills). Each one is self-contained, so you can i
 | OpenClaw | `npx skills add dydtai/dydt-skills --agent openclaw` |
 | Every detected agent | `npx skills add dydtai/dydt-skills --all` |
 
-Add `-g` to install for your user instead of the current project.
+Add `-g` to install for every project instead of only the current folder.
 
-## Skills
+### Setup steps for AI agents
 
-| Skill | Use it for | Plan |
-|---|---|---|
-| `dydt-setup` | Installing the CLI, saving the key, what each plan includes, fixing errors | Any |
-| `dydt-token` | Name to the right token address, metadata, supply, authorities, holders, pools, bonding curve | Any |
-| `dydt-token-check` | A risk read as findings that each cite the field they read. No scores, no advice | Any |
-| `dydt-market` | Candles, pool metrics, trades, top traders, SOL price | Any |
-| `dydt-discover` | New, popular, gaining, almost-bonded, migrated, and stock feeds | Any |
-| `dydt-wallet` | Wallet PnL, positions, trades, daily PnL, wallet leaderboard | Any |
-| `dydt-dev-check` | A token creator's launch history | Any |
-| `dydt-brief` | A market brief: trending, movers, launches, KOL buys, signals, red flags | Any; KOL and signal sections need Pro |
-| `dydt-smart-money` | KOL trades, labeled wallet lists, KOL leaderboard, wallet signals | Pro, Scale |
-| `dydt-signals` | dydt token signals and per-token signal history | Pro, Scale |
-| `dydt-watch` | Bounded live monitoring of pools, wallets, rankings, and signals | Starter and up |
+If you are an agent setting this up for a user, do this:
 
-Longer guides ship inside the skills: [token research](skills/dydt-token-check/references/token-research.md), [smart money brief](skills/dydt-smart-money/references/smart-money-brief.md), [wallet review](skills/dydt-wallet/references/wallet-review.md).
+1. Run `dydt --version`. If the command is missing, run `npm install -g dydt-cli`.
+2. Run `dydt config check`. Exit code 0 means a key is already configured; you are done.
+3. Otherwise tell the user: *"Create a free API key at https://dydt.ai/developers/keys and paste it here."* Wait for the key.
+4. Run `dydt config set <key>`, then `dydt sol-price` to confirm.
+5. Never print the full key back, and never write it into project files or commits.
 
-## Example prompts
-
-```
-Is DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263 safe? Give me the red flags.
-Find the real WIF token, not a copycat, and show its holders.
-What is trending on Solana in the last hour with more than $50k liquidity?
-Which tokens are about to graduate from pump.fun?
-How has wallet <address> done over the last 30 days? Is it one lucky trade?
-What does wallet <address> hold right now, and what is it up or down?
-Who created <token>, and what happened to their other launches?
-What are KOLs buying in the last 24 hours? Group by token.
-Write me a morning brief of the Solana memecoin market.
-Watch pool <pool> for the next 5 minutes and tell me about any sell over $5k.
-```
-
-## CLI reference
-
-<img src="https://raw.githubusercontent.com/dydtai/dydt-skills/main/static/commands.png" alt="Output of dydt list: every command grouped by tokens, pools, trades, rankings, signals, wallets, and market" width="1280">
+### Commands
 
 Every command prints the response `data` as pretty JSON. Add `--raw` for one line per result, which is easier to pipe into `jq`. Paged commands print the next `--cursor` on stderr. Run `dydt list` for every command and `dydt help <command>` for its options. Field names are snake_case: addresses end in `_address`, times in `_at` (Unix milliseconds), shares in `_pct` (0 to 100).
 
-### Tokens
+#### Tokens
 
 ```bash
 dydt search-tokens --q bonk --limit 10              # name, symbol, or address to candidates
@@ -136,7 +191,7 @@ dydt token-bonding-curve <token_address>            # launchpad curve state
 dydt wallet-created-tokens <creator_address>        # every token a creator launched
 ```
 
-### Pools and prices
+#### Pools and prices
 
 ```bash
 dydt pools --base_address <token_address>           # every pool for a token
@@ -149,7 +204,7 @@ dydt pool-candles <pool_address> --limit 96 --interval 15m --currency usd
 dydt sol-price                                      # SOL price in USD
 ```
 
-### Trades and rankings
+#### Trades and rankings
 
 ```bash
 dydt trades --token_address <token> --limit 20      # latest trades for a token
@@ -158,7 +213,7 @@ dydt token-ranking popular --window 1h --limit 20         # also new_pair, top_g
 dydt token-ranking new_pair --window 5m --min_liquidity_usd 20000 --max_top10_pct 40
 ```
 
-### Wallets
+#### Wallets
 
 ```bash
 dydt wallet-stats <address> --window 30d            # stats over 1h, 24h, 3d, 7d, or 30d
@@ -187,7 +242,7 @@ Example: `dydt wallet-stats 4G9JAzftaydKjB2558MLnkYw175KMN6NGGgyxkeRuwwA --windo
 
 (Trimmed; the full response also has fees, cost basis, streaks, best and worst day, and a PnL series.)
 
-### KOLs and signals (Pro and Scale)
+#### KOLs and signals (Pro and Scale)
 
 ```bash
 dydt wallet-activity --label kol --type buy --min_amount_usd 100   # what KOLs are buying, newest first
@@ -198,7 +253,7 @@ dydt token-signals --limit 20                       # dydt token signals
 dydt token-signal-history <token_address>                      # every signal on one token
 ```
 
-### Live streams (Starter and up)
+#### Live streams (Starter and up)
 
 `dydt watch` prints one JSON event per line (`{"stream", "data"}`) and **always stops**, after `--seconds` (default 60, up to 3600) or `--max-events` (default 50).
 
@@ -222,7 +277,7 @@ dydt watch token_signals --seconds 900              # Pro and Scale
 | `token_metadata` | none | Token metadata changes |
 | `wallet_signals`, `token_signals`, `markers`, `chart_lines`, `x_posts` | see `dydt help watch <stream>` | Pro and Scale streams |
 
-### Setup and maintenance
+#### Setup and maintenance
 
 ```bash
 dydt config                  # show key status and how to get one
@@ -232,7 +287,7 @@ dydt spec refresh            # reload commands and streams from dydt.ai now
 dydt --version
 ```
 
-## Output and errors
+### Output and errors
 
 | Case | Output | Exit code |
 |---|---|---|
@@ -242,17 +297,7 @@ dydt --version
 
 Common codes: `4010`/`4013` missing or invalid key · `4033` needs a higher plan · `4290` rate limited · `4291` monthly quota used · `4292` too many requests in flight · stream close `4402` streams need a paid plan · `4429` stream allowance or connection limit reached. The `dydt-setup` skill explains what to do for each.
 
-## Plans
-
-| | Free | Starter | Pro | Scale |
-|---|---|---|---|---|
-| REST commands | Yes | Yes | Yes | Yes |
-| Live streams (`dydt watch`) | No | Yes | Yes | Yes |
-| Signals, KOL trades, labeled wallets, KOL leaderboard, wallet signals | No | No | Yes | Yes |
-
-Rate limits, monthly quotas, and prices are on the [pricing page](https://dydt.ai/developers/billing). Pay in USDC or SOL.
-
-## Configuration
+### Environment variables
 
 | Variable | Purpose |
 |---|---|
@@ -261,35 +306,7 @@ Rate limits, monthly quotas, and prices are on the [pricing page](https://dydt.a
 | `DYDT_WS_URL` | Alternate stream URL. Only `wss://*.dydt.ai` or localhost are accepted. |
 | `XDG_CONFIG_HOME`, `XDG_CACHE_HOME` | Where the key and the cached specs are stored. |
 
-## Safety
-
-- **Read-only.** There is no trade, transfer, or signing command, and no wallet key is ever asked for.
-- **Pinned hosts.** Requests go only to `data.dydt.ai`. The overrides above refuse any other host.
-- **Prompt-injection guard.** Token names, descriptions, and links are written by whoever launched the token. The CLI removes hidden and bidirectional characters, replaces instruction-like text with `[filtered]`, and prints a notice on stderr. The skills tell agents to treat all response text as data and to report `[filtered]` as a red flag.
-- **Key handling.** The key is stored with mode 600 and sent only as a bearer token to dydt.
-- **Current spec.** Commands come from `https://dydt.ai/openapi.json` and streams from `https://dydt.ai/asyncapi.json`, cached for 24 hours, with bundled copies as a fallback.
-
-**Disclaimer.** dydt reports what happened on chain and what dydt's classifiers observed. Labels and signals can be wrong. Nothing here is financial advice, and the skills instruct agents not to give buy or sell recommendations.
-
-## Troubleshooting
-
-| Problem | Fix |
-|---|---|
-| `dydt: command not found` | `npm install -g dydt-cli`, and check `node --version` is 22.4 or newer |
-| `No API key` | `dydt config set <key>`, or set `DYDT_API_KEY` |
-| A command is not listed | `dydt spec refresh`, then `npm install -g dydt-cli@latest` |
-| HTTP 403, code 4033 | The command needs Pro or Scale |
-| Stream closes with 4402 | Streams need Starter or higher; use REST commands instead |
-| Your agent scrapes dydt.ai instead of using the CLI | Add to your prompt: *"Use the dydt CLI; do not fetch dydt.ai pages."* |
-
-## Upgrade
-
-```bash
-npm install -g dydt-cli@latest
-npx skills add dydtai/dydt-skills        # re-run to update the skills
-```
-
-## Develop
+### Work on this repository
 
 ```bash
 git clone https://github.com/dydtai/dydt-skills && cd dydt-skills
