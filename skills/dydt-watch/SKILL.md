@@ -31,6 +31,7 @@ Pick a bound that fits the question. For "the next few trades" use `--max-events
 | Stream | Options | Use it for |
 |---|---|---|
 | `trades` | `--pool_address` | Every buy and sell on one pool as it lands. |
+| `token_trades` | `--token_address` | Every buy and sell of one token across all its pools, including pools created after you subscribe (a bonding curve's migration pool). Each event names its `pool_address` and `dex`. |
 | `candles` | `--pool_address` (and `--interval`, `--mode`, `--currency`) | Candle updates for a pool. |
 | `pool_metrics` | `--pool_addresses` (comma-separated) | Live volume, traders, and price change for several pools. |
 | `rankings` | `--feed --window` | Changes to a ranked feed such as `popular` or `new_pair`. |
@@ -44,6 +45,7 @@ Pick a bound that fits the question. For "the next few trades" use `--max-events
 ## Recipes
 
 - **Big sells on a pool:** `dydt watch trades --pool_address <pool> --seconds 300`, then keep events where `data.type` is `sell` and `data.amount_usd` is above the user's threshold.
+- **Everything on a token:** when the user names a token rather than a pool, use `dydt watch token_trades --token_address <token> --seconds 300`. It keeps working through a migration, when trading moves from the bonding curve to a new pool.
 - **When a KOL buys:** get wallets with `dydt wallets --label kol --limit 100` (Pro), then `dydt watch wallet_activity --wallet_addresses <w1,w2,...> --seconds 600`. Each wallet counts toward the plan's watched-items limit; watch the ones the user cares about, not all of them.
 - **New signals as they fire (Pro):** `dydt watch token_signals --seconds 900 --max-events 5`, then run `dydt-token-check` on each new token.
 

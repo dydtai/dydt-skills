@@ -29,6 +29,12 @@
         "event_trades": {
           "$ref": "#/components/messages/event_trades"
         },
+        "subscribe_token_trades": {
+          "$ref": "#/components/messages/subscribe_token_trades"
+        },
+        "event_token_trades": {
+          "$ref": "#/components/messages/event_token_trades"
+        },
         "subscribe_pool_metrics": {
           "$ref": "#/components/messages/subscribe_pool_metrics"
         },
@@ -115,6 +121,9 @@
           "$ref": "#/channels/market/messages/subscribe_trades"
         },
         {
+          "$ref": "#/channels/market/messages/subscribe_token_trades"
+        },
+        {
           "$ref": "#/channels/market/messages/subscribe_pool_metrics"
         },
         {
@@ -157,6 +166,9 @@
         },
         {
           "$ref": "#/channels/market/messages/event_trades"
+        },
+        {
+          "$ref": "#/channels/market/messages/event_token_trades"
         },
         {
           "$ref": "#/channels/market/messages/event_pool_metrics"
@@ -483,6 +495,8 @@
                 "wallet_address",
                 "token_address",
                 "quote_address",
+                "pool_address",
+                "dex",
                 "token_amount",
                 "quote_amount",
                 "amount_usd",
@@ -535,6 +549,190 @@
                   "type": "string",
                   "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
                   "description": "Mint of the asset the token is priced against, usually wrapped SOL."
+                },
+                "pool_address": {
+                  "type": "string",
+                  "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                  "description": "Pool address."
+                },
+                "dex": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Venue of the pool, for example pumpfun, pumpAmm, raydium, meteora."
+                },
+                "token_amount": {
+                  "type": "number",
+                  "description": "Tokens traded, in whole tokens."
+                },
+                "quote_amount": {
+                  "type": "number",
+                  "description": "Quote asset paid or received."
+                },
+                "amount_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Trade value in USD."
+                },
+                "market_cap_quote": {
+                  "type": "number",
+                  "description": "Market cap at the trade, in the quote asset."
+                },
+                "market_cap_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Market cap at the trade, in USD."
+                },
+                "labels": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "dydt labels on the trader, for example kol."
+                },
+                "created_at": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Block time."
+                }
+              }
+            }
+          }
+        }
+      },
+      "subscribe_token_trades": {
+        "name": "subscribe_token_trades",
+        "title": "Subscribe: Token trades",
+        "summary": "Every buy and sell of a token across all of its pools as it lands, including pools created after you subscribe, such as the pool a bonding curve migrates to.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "stream",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "subscribe",
+                "unsubscribe"
+              ]
+            },
+            "stream": {
+              "const": "token_trades"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "token_address"
+              ],
+              "properties": {
+                "token_address": {
+                  "type": "string",
+                  "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                  "description": "Token to watch."
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_token_trades": {
+        "name": "event_token_trades",
+        "title": "Event: Token trades",
+        "payload": {
+          "type": "object",
+          "required": [
+            "stream",
+            "data"
+          ],
+          "properties": {
+            "stream": {
+              "const": "token_trades"
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "trade_id",
+                "tx_hash",
+                "slot",
+                "tx_index",
+                "event_index",
+                "type",
+                "wallet_address",
+                "token_address",
+                "quote_address",
+                "pool_address",
+                "dex",
+                "token_amount",
+                "quote_amount",
+                "amount_usd",
+                "market_cap_quote",
+                "market_cap_usd",
+                "labels",
+                "created_at"
+              ],
+              "properties": {
+                "trade_id": {
+                  "type": "string",
+                  "description": "Trade id, unique per trade."
+                },
+                "tx_hash": {
+                  "type": "string",
+                  "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,90}$",
+                  "description": "Transaction signature."
+                },
+                "slot": {
+                  "type": "integer",
+                  "description": "Slot the transaction landed in."
+                },
+                "tx_index": {
+                  "type": "integer",
+                  "description": "Position of the transaction within its slot."
+                },
+                "event_index": {
+                  "type": "integer",
+                  "description": "Position of this trade within its transaction; a multi-hop swap has one per pool."
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "buy",
+                    "sell"
+                  ],
+                  "description": "buy or sell."
+                },
+                "wallet_address": {
+                  "type": "string",
+                  "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                  "description": "Wallet that traded."
+                },
+                "token_address": {
+                  "type": "string",
+                  "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                  "description": "Token mint address."
+                },
+                "quote_address": {
+                  "type": "string",
+                  "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                  "description": "Mint of the asset the token is priced against, usually wrapped SOL."
+                },
+                "pool_address": {
+                  "type": "string",
+                  "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                  "description": "Pool address."
+                },
+                "dex": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Venue of the pool, for example pumpfun, pumpAmm, raydium, meteora."
                 },
                 "token_amount": {
                   "type": "number",

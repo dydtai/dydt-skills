@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3
+
+- New stream `token_trades`: `dydt watch token_trades --token_address <token>` follows a token's trades across all of its pools, including pools created after you subscribe. Trade events on `trades` and `token_trades` now include `pool_address` and `dex`.
+
 ## 0.3.2
 
 - Every trade now includes `slot`, `tx_index` and `event_index` (REST lists, leaderboard recent trades, and the `trades` and `wallet_activity` streams), for ordering and matching trades to on-chain transactions.
