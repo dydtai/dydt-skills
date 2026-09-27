@@ -219,7 +219,7 @@ dydt sol-price                                      # SOL price in USD
 
 ```bash
 dydt token-trades <token> --limit 20                # latest trades for a token, across all its pools
-dydt trades --pool_address <pool> --min_amount_usd 1000   # filtered trades, last 30 days
+dydt pool-trades <pool> --min_amount_usd 1000            # filtered pool trades, last 30 days
 dydt token-ranking popular --window 1h --limit 20         # also new_pair, top_gainers, almost_bonded, migrated, stocks
 dydt token-ranking new_pair --window 5m --min_liquidity_usd 20000 --max_top10_pct 40
 ```
@@ -261,7 +261,7 @@ dydt wallets --label kol --limit 100                      # KOL wallets with nam
 dydt wallet-leaderboard --scope kol --window 7d                # KOLs ranked by PnL
 dydt wallet-signals --limit 20                      # best closed trades by tracked wallets
 dydt token-signals --limit 20                       # dydt token signals
-dydt token-signal-history <token_address>                      # every signal on one token
+dydt token-signals --token_address <token_address>             # every signal on one token
 ```
 
 #### Live streams (Starter and up)
@@ -270,8 +270,8 @@ dydt token-signal-history <token_address>                      # every signal on
 
 ```bash
 dydt watch                                          # list streams
-dydt help watch trades                              # options for one stream
-dydt watch trades --pool_address <pool> --max-events 20
+dydt help watch pool_trades                         # options for one stream
+dydt watch pool_trades --pool_address <pool> --max-events 20
 dydt watch candles --pool_address <pool> --interval 1m --seconds 120
 dydt watch wallet_activity --wallet_addresses <w1>,<w2> --seconds 600
 dydt watch rankings --feed new_pair --window 5m
@@ -280,7 +280,7 @@ dydt watch token_signals --seconds 900              # Pro and Scale
 
 | Stream | Needs | What arrives |
 |---|---|---|
-| `trades` | `--pool_address` | Every buy and sell on a pool |
+| `pool_trades` | `--pool_address` | Every buy and sell on a pool |
 | `candles` | `--pool_address` | Candle updates |
 | `pool_metrics` | `--pool_addresses` | Live volume, traders, price change |
 | `rankings` | `--feed --window` | Ranked feed changes |

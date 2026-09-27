@@ -12,7 +12,7 @@ Use when the user wants a full picture of a token, not a single number. Skills i
    - `dydt pool-candles <pool_address> --limit 96 --interval 15m --currency usd`
    - `dydt token-traders <token_address> --window 7d`
 4. **Creator:** read the creator from `dydt pool <pool_address>` (`base_token.creator_address`) and run `dydt wallet-created-tokens <creator_address>`.
-5. **Signals (Pro and Scale):** `dydt token-signal-history <token_address>`. Skip quietly on a 4033.
+5. **Signals (Pro and Scale):** `dydt token-signals --token_address <token_address>`. Skip quietly on a 4033.
 6. **Write it up:**
    - One-line identity: symbol, token address, age, venue, pool.
    - Market: market cap, liquidity, 1h and 24h volume and price change, distinct traders.

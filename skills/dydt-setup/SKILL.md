@@ -38,7 +38,7 @@ description: Install and configure the dydt CLI and API key, check which dydt pl
 |---|---|
 | Free | Every REST command except the Pro ones below, at a low rate and monthly limit. No streams. |
 | Starter | Higher limits, plus `dydt watch` streams except the Pro ones. |
-| Pro and Scale | Everything: `token-signals`, `token-signal-history`, `wallets`, `wallet-activity`, `wallet-signals`, `wallet-leaderboard --scope kol`, `--label` on `token-traders` and `token-holders`, and the `wallet_signals`, `token_signals`, `markers`, `chart_lines`, and `x_posts` streams. |
+| Pro and Scale | Everything: `token-signals`, `wallets`, `wallet-activity`, `wallet-signals`, `wallet-leaderboard --scope kol`, `--label` on `token-traders` and `token-holders`, and the `wallet_signals`, `token_signals`, `markers`, `chart_lines`, and `x_posts` streams. |
 
 Current prices and limits: https://dydt.ai/developers/billing. Stream access, stream allowances, and watched-item limits depend on the plan.
 

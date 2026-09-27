@@ -132,9 +132,9 @@ const streams = streamsOf(JSON.parse(await readFile(new URL("../spec/asyncapi.js
 const stream = (id) => streams.find((candidate) => candidate.id === id);
 
 test("streams come from the AsyncAPI spec", () => {
-  assert.ok(stream("trades"));
+  assert.ok(stream("pool_trades"));
   assert.ok(stream("wallet_activity"));
-  assert.deepEqual(stream("trades").fields.map((field) => [field.name, field.required]), [["pool_address", true]]);
+  assert.deepEqual(stream("pool_trades").fields.map((field) => [field.name, field.required]), [["pool_address", true]]);
 });
 
 test("stream payloads are typed from the spec and validated locally", () => {
@@ -155,7 +155,7 @@ test("stream payloads are typed from the spec and validated locally", () => {
   assert.deepEqual(buildPayload(stream("token_signals"), {}), {});
   assert.throws(() => buildPayload(stream("candles"), {}), /--pool_address is required/);
   assert.throws(() => buildPayload(stream("candles"), { pool_address: [WALLET], interval: ["2m"] }), /one of/);
-  assert.throws(() => buildPayload(stream("trades"), { pool_address: [WALLET], nope: ["1"] }), /unknown option --nope/);
+  assert.throws(() => buildPayload(stream("pool_trades"), { pool_address: [WALLET], nope: ["1"] }), /unknown option --nope/);
 });
 
 test("the stream host is pinned like the API host", () => {
@@ -179,7 +179,7 @@ test("a success envelope yields data and pagination", async () => {
     "X-Quota-Remaining": "10",
     "X-Quota-Limit": "100",
   });
-  const result = await callApi(`${BASE}/trades`, "key");
+  const result = await callApi(`${BASE}/pools/x/trades`, "key");
   assert.equal(result.ok, true);
   assert.deepEqual(result.data, [1]);
   assert.deepEqual(result.pagination, { next_cursor: "abc", has_more: true });
@@ -188,7 +188,7 @@ test("a success envelope yields data and pagination", async () => {
 
 test("an error envelope yields its code, name, and retry hint", async () => {
   respondWith(429, { code: 4290, error: "RATE_LIMITED", message: "Too many requests", data: null }, { "Retry-After": "3" });
-  const result = await callApi(`${BASE}/trades`, "key");
+  const result = await callApi(`${BASE}/pools/x/trades`, "key");
   assert.deepEqual(result, {
     ok: false,
     error: { http: 429, code: 4290, error: "RATE_LIMITED", message: "Too many requests", retry_after_seconds: 3 },

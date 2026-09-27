@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.4
+
+- `dydt help` groups commands by task (Token Research, Charts & Pools, Trades, Discovery, Smart Money, Wallet Analysis) with short titles.
+- New `dydt pool-trades <pool_address>`: trades in one pool and the bonding curve it migrated from.
+- `dydt token-signals --token_address <token>` returns every signal on one token.
+- **Removed:** `dydt trades` (use `dydt token-trades` or `dydt pool-trades`) and `dydt token-signal-history` (use `dydt token-signals --token_address`). The `trades` stream is now `pool_trades`.
+
 ## 0.3.3
 
 - New stream `token_trades`: `dydt watch token_trades --token_address <token>` follows a token's trades across all of its pools, including pools created after you subscribe. Trade events on `trades` and `token_trades` now include `pool_address` and `dex`.

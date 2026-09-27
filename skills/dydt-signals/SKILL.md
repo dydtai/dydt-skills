@@ -27,7 +27,7 @@ Both commands need the **Pro or Scale** plan.
 | Command | Use it for |
 |---|---|
 | `dydt token-signals` | Current signals, newest first. Filter with `--tiers`, `--kinds cohort,momentum`, `--min_entity_count`, `--min_cohort_buy_usd`, `--min_alert_liquidity_usd`, `--max_alert_market_cap_usd`, `--anchor_only true`. Page with `--cursor`. To poll for new ones, pass the newest `triggered_at` you have as `--start_time`. |
-| `dydt token-signal-history <token_address>` | Every signal on one token, newest first. |
+| `dydt token-signals --token_address <token_address>` | Every signal on one token, newest first. |
 
 ## Reading the data
 
