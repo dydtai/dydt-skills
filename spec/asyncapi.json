@@ -1854,7 +1854,8 @@
                                 "enum": [
                                   "creator",
                                   "shared",
-                                  "cashback"
+                                  "cashback",
+                                  "holders"
                                 ],
                                 "description": "Where creator trading fees are routed."
                               }
@@ -2554,7 +2555,8 @@
                               "enum": [
                                 "creator",
                                 "shared",
-                                "cashback"
+                                "cashback",
+                                "holders"
                               ],
                               "description": "Where creator trading fees are routed."
                             }
@@ -3276,7 +3278,8 @@
                                         "enum": [
                                           "creator",
                                           "shared",
-                                          "cashback"
+                                          "cashback",
+                                          "holders"
                                         ],
                                         "description": "Where creator trading fees are routed."
                                       }

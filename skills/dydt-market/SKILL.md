@@ -29,7 +29,8 @@ description: Read Solana token market data from dydt - OHLCV and market-cap cand
 | `dydt pool-candles <pool_address> --interval 15m --limit 96` | Price or market-cap candles (`--mode market_cap`), in USD or quote (`--currency`). Bound a range with `--start_time` and `--end_time`. |
 | `dydt pool-metrics <pool_address>` | All-time `totals` plus volume, trades, traders, and price change per window. |
 | `dydt pools-metrics --pool_addresses <a,b,...>` | The same metrics for up to 50 pools in one call, for watchlists. |
-| `dydt trades --token_address <token_address>` | Latest trades for a token; also `--pool_address`, `--wallet_addresses`, `--type`, size and time filters. `--order asc` walks forward from `--start_time` for backfills. Last 30 days. |
+| `dydt token-trades <token_address>` | Latest trades for a token across all of its pools, bonding curve included; each row has `pool_address` and `dex`. Filter with `--wallet_addresses`, `--type`, size and time. `--order asc` walks forward from `--start_time` for backfills. Last 30 days. |
+| `dydt trades --pool_address <pool_address>` | Trades on one pool and the bonding curve it migrated from, with the same filters. Without a pool it reads every token. |
 | `dydt token-traders <token_address> --window 7d` | Wallets ranked by realized PnL or volume on this token. `--label kol` (Pro) shows only KOLs. |
 | `dydt sol-price` | SOL price in USD. |
 

@@ -1515,6 +1515,361 @@
         }
       }
     },
+    "/tokens/{token_address}/trades": {
+      "get": {
+        "operationId": "list_token_trades",
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "List token trades",
+        "description": "Trades of one token across every pool it trades in, bonding curve included, each row with its pool and DEX. Newest first by default; order=asc walks forward from start_time.",
+        "parameters": [
+          {
+            "name": "token_address",
+            "in": "path",
+            "required": true,
+            "description": "Token mint address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "Token mint address."
+            }
+          },
+          {
+            "name": "wallet_addresses",
+            "in": "query",
+            "required": false,
+            "description": "Only trades by these wallets, comma-separated, up to 200.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+              },
+              "maxItems": 200,
+              "description": "Only trades by these wallets, comma-separated, up to 200."
+            }
+          },
+          {
+            "name": "tx_hash",
+            "in": "query",
+            "required": false,
+            "description": "Only trades in this transaction.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,90}$",
+              "description": "Only trades in this transaction."
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Only this kind of trade.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "buy",
+                "sell",
+                "add",
+                "remove"
+              ],
+              "description": "Only this kind of trade."
+            }
+          },
+          {
+            "name": "min_amount_usd",
+            "in": "query",
+            "required": false,
+            "description": "Only trades worth at least this much, in USD.",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Only trades worth at least this much, in USD."
+            }
+          },
+          {
+            "name": "max_amount_usd",
+            "in": "query",
+            "required": false,
+            "description": "Only trades worth at most this much, in USD.",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Only trades worth at most this much, in USD."
+            }
+          },
+          {
+            "name": "min_market_cap_usd",
+            "in": "query",
+            "required": false,
+            "description": "Only trades made at a market cap of at least this much, in USD.",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Only trades made at a market cap of at least this much, in USD."
+            }
+          },
+          {
+            "name": "max_market_cap_usd",
+            "in": "query",
+            "required": false,
+            "description": "Only trades made at a market cap of at most this much, in USD.",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Only trades made at a market cap of at most this much, in USD."
+            }
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": false,
+            "description": "Only rows at or after this time, at most 30 days back. Defaults to the last 24 hours.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0,
+              "description": "Only rows at or after this time, at most 30 days back. Defaults to the last 24 hours."
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": false,
+            "description": "Only rows before this time.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0,
+              "description": "Only rows before this time."
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "desc for newest first, asc for oldest first from start_time.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "description": "desc for newest first, asc for oldest first from start_time.",
+              "default": "desc"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum rows to return.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Maximum rows to return.",
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "next_cursor from the previous page. Omit for the first page.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "description": "next_cursor from the previous page. Omit for the first page."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "error",
+                    "message",
+                    "data",
+                    "pagination"
+                  ],
+                  "properties": {
+                    "code": {
+                      "const": 0
+                    },
+                    "error": {
+                      "type": "null"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "trade_id",
+                          "tx_hash",
+                          "slot",
+                          "type",
+                          "wallet_address",
+                          "token_address",
+                          "quote_address",
+                          "pool_address",
+                          "dex",
+                          "token_amount",
+                          "quote_amount",
+                          "amount_usd",
+                          "amount_sol",
+                          "price_quote",
+                          "price_usd",
+                          "market_cap_quote",
+                          "market_cap_usd",
+                          "created_at"
+                        ],
+                        "properties": {
+                          "trade_id": {
+                            "type": "string",
+                            "description": "Trade id, unique per trade."
+                          },
+                          "tx_hash": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,90}$",
+                            "description": "Transaction signature."
+                          },
+                          "slot": {
+                            "type": "integer",
+                            "description": "Slot the transaction landed in."
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "buy",
+                              "sell",
+                              "add",
+                              "remove"
+                            ],
+                            "description": "buy, sell, add (liquidity), or remove (liquidity)."
+                          },
+                          "wallet_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Wallet that traded."
+                          },
+                          "token_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Token mint address."
+                          },
+                          "quote_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Mint of the asset the token is priced against, usually wrapped SOL."
+                          },
+                          "pool_address": {
+                            "type": "string",
+                            "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+                            "description": "Pool address."
+                          },
+                          "dex": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Venue of the pool, for example pumpfun, pumpAmm, raydium, meteora."
+                          },
+                          "token_amount": {
+                            "type": "number",
+                            "description": "Tokens traded, in whole tokens."
+                          },
+                          "quote_amount": {
+                            "type": "number",
+                            "description": "Quote asset paid or received."
+                          },
+                          "amount_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Trade value in USD."
+                          },
+                          "amount_sol": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Trade value in SOL."
+                          },
+                          "price_quote": {
+                            "type": "number",
+                            "description": "Execution price per token in the quote asset."
+                          },
+                          "price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Execution price per token in USD."
+                          },
+                          "market_cap_quote": {
+                            "type": "number",
+                            "description": "Market cap at the trade, in the quote asset."
+                          },
+                          "market_cap_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap at the trade, in USD."
+                          },
+                          "created_at": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Block time."
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
     "/tokens/{token_address}/bonding-curve": {
       "get": {
         "operationId": "get_token_bonding_curve",
@@ -2715,7 +3070,8 @@
                                 "enum": [
                                   "creator",
                                   "shared",
-                                  "cashback"
+                                  "cashback",
+                                  "holders"
                                 ],
                                 "description": "Where creator trading fees are routed."
                               }
@@ -4536,7 +4892,8 @@
                               "enum": [
                                 "creator",
                                 "shared",
-                                "cashback"
+                                "cashback",
+                                "holders"
                               ],
                               "description": "Where creator trading fees are routed."
                             },
@@ -4653,7 +5010,8 @@
                               "enum": [
                                 "creator",
                                 "shared",
-                                "cashback"
+                                "cashback",
+                                "holders"
                               ],
                               "description": "Where creator trading fees are routed."
                             },
@@ -9542,7 +9900,8 @@
                                 "enum": [
                                   "creator",
                                   "shared",
-                                  "cashback"
+                                  "cashback",
+                                  "holders"
                                 ],
                                 "description": "Where creator trading fees are routed."
                               }

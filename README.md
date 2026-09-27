@@ -218,7 +218,7 @@ dydt sol-price                                      # SOL price in USD
 #### Trades and rankings
 
 ```bash
-dydt trades --token_address <token> --limit 20      # latest trades for a token
+dydt token-trades <token> --limit 20                # latest trades for a token, across all its pools
 dydt trades --pool_address <pool> --min_amount_usd 1000   # filtered trades, last 30 days
 dydt token-ranking popular --window 1h --limit 20         # also new_pair, top_gainers, almost_bonded, migrated, stocks
 dydt token-ranking new_pair --window 5m --min_liquidity_usd 20000 --max_top10_pct 40

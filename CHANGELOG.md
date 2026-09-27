@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- New `dydt token-trades <token_address>`: a token's trades across every pool it trades in, bonding curve included, newest first. Each trade names its `pool_address` and `dex`. Same filters, 30-day history and cursor as `dydt trades`.
+
 ## 0.3.0
 
 Moves the CLI to version 1 of the dydt Data API. **Every command was renamed**, so update the CLI and the skills together:
