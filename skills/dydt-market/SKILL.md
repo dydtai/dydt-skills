@@ -38,6 +38,7 @@ description: Read Solana token market data from dydt - OHLCV and market-cap cand
 
 - **Pick the right pool.** Tokens migrate from a bonding curve to an AMM. After migration the curve pool stops trading; use the pool with current liquidity. `dydt pool <pool_address>` shows `superseded_by` when a pool was replaced.
 - **Windowed metrics are compact.** `windowed.t` lists the windows (for example `["1m","5m","1h","6h","24h"]`) and every other array is indexed by `t`. Money values are `[quote, usd]` pairs. `pp` is price change %, `v`/`vb`/`vs` total/buy/sell volume, `tc`/`bc`/`sc` trade counts, `m`/`bm`/`sm` distinct traders.
+- **Trade order.** Trades sort by `created_at`, then `slot`, `tx_index` (transaction within the slot) and `event_index` (trade within the transaction). Use these, with `tx_hash`, to match a trade to its on-chain transaction or to order trades within the same second. A multi-hop swap has one trade per pool, with different `event_index` values.
 - **Candles** are oldest first; `start_at` is Unix milliseconds. Intervals without trades are omitted.
 - **Snapshots can show quote values as 0 while `usd` is set.** Use `*_usd`.
 - **Trades:** `type` is `buy`, `sell`, `add`, or `remove`; `token_amount` is in whole tokens. History is limited to the last 30 days.

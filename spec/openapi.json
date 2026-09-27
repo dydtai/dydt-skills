@@ -1719,6 +1719,8 @@
                           "trade_id",
                           "tx_hash",
                           "slot",
+                          "tx_index",
+                          "event_index",
                           "type",
                           "wallet_address",
                           "token_address",
@@ -1748,6 +1750,14 @@
                           "slot": {
                             "type": "integer",
                             "description": "Slot the transaction landed in."
+                          },
+                          "tx_index": {
+                            "type": "integer",
+                            "description": "Position of the transaction within its slot."
+                          },
+                          "event_index": {
+                            "type": "integer",
+                            "description": "Position of this trade within its transaction; a multi-hop swap has one per pool."
                           },
                           "type": {
                             "type": "string",
@@ -6580,6 +6590,8 @@
                           "trade_id",
                           "tx_hash",
                           "slot",
+                          "tx_index",
+                          "event_index",
                           "type",
                           "wallet_address",
                           "token_address",
@@ -6609,6 +6621,14 @@
                           "slot": {
                             "type": "integer",
                             "description": "Slot the transaction landed in."
+                          },
+                          "tx_index": {
+                            "type": "integer",
+                            "description": "Position of the transaction within its slot."
+                          },
+                          "event_index": {
+                            "type": "integer",
+                            "description": "Position of this trade within its transaction; a multi-hop swap has one per pool."
                           },
                           "type": {
                             "type": "string",
@@ -7071,6 +7091,9 @@
                         "required": [
                           "trade_id",
                           "tx_hash",
+                          "slot",
+                          "tx_index",
+                          "event_index",
                           "type",
                           "token_address",
                           "pool_address",
@@ -7106,6 +7129,18 @@
                             "type": "string",
                             "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,90}$",
                             "description": "Transaction signature."
+                          },
+                          "slot": {
+                            "type": "integer",
+                            "description": "Slot the transaction landed in."
+                          },
+                          "tx_index": {
+                            "type": "integer",
+                            "description": "Position of the transaction within its slot."
+                          },
+                          "event_index": {
+                            "type": "integer",
+                            "description": "Position of this trade within its transaction; a multi-hop swap has one per pool."
                           },
                           "type": {
                             "type": "string",
@@ -8234,6 +8269,9 @@
                               "required": [
                                 "trade_id",
                                 "tx_hash",
+                                "slot",
+                                "tx_index",
+                                "event_index",
                                 "type",
                                 "token_address",
                                 "quote_address",
@@ -8251,6 +8289,18 @@
                                   "type": "string",
                                   "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,90}$",
                                   "description": "Transaction signature."
+                                },
+                                "slot": {
+                                  "type": "integer",
+                                  "description": "Slot the transaction landed in."
+                                },
+                                "tx_index": {
+                                  "type": "integer",
+                                  "description": "Position of the transaction within its slot."
+                                },
+                                "event_index": {
+                                  "type": "integer",
+                                  "description": "Position of this trade within its transaction; a multi-hop swap has one per pool."
                                 },
                                 "type": {
                                   "type": "string",
@@ -9265,6 +9315,9 @@
                         "required": [
                           "trade_id",
                           "tx_hash",
+                          "slot",
+                          "tx_index",
+                          "event_index",
                           "type",
                           "token_address",
                           "pool_address",
@@ -9298,6 +9351,18 @@
                             "type": "string",
                             "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,90}$",
                             "description": "Transaction signature."
+                          },
+                          "slot": {
+                            "type": "integer",
+                            "description": "Slot the transaction landed in."
+                          },
+                          "tx_index": {
+                            "type": "integer",
+                            "description": "Position of the transaction within its slot."
+                          },
+                          "event_index": {
+                            "type": "integer",
+                            "description": "Position of this trade within its transaction; a multi-hop swap has one per pool."
                           },
                           "type": {
                             "type": "string",

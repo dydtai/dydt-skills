@@ -2,6 +2,7 @@
 
 ## 0.3.1
 
+- Every trade now includes `slot`, `tx_index` and `event_index` (REST lists, leaderboard recent trades, and the `trades` and `wallet_activity` streams), for ordering and matching trades to on-chain transactions.
 - New `dydt token-trades <token_address>`: a token's trades across every pool it trades in, bonding curve included, newest first. Each trade names its `pool_address` and `dex`. Same filters, 30-day history and cursor as `dydt trades`.
 
 ## 0.3.0
