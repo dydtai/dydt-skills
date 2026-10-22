@@ -192,7 +192,7 @@ Every command prints the response `data` as pretty JSON. Add `--raw` for one lin
 
 ```bash
 dydt search-tokens --q bonk --limit 10              # name, symbol, or address to candidates
-dydt search-tokens --q BONK --match exact           # exact symbol only
+dydt search-tokens --q BONK --match exact           # exact symbol or name only
 dydt token <token_address>                          # metadata, supply, authorities, socials
 dydt tokens --token_addresses <a>,<b>               # up to 50 tokens in one call
 dydt token-holder-stats <token_address>             # insiders, fresh wallets, creator history

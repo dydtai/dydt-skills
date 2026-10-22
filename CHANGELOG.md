@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.5
+
+- `dydt search-tokens` returns one result per token, and the real token ranks above copycats: results are ordered by real liquidity in SOL, USDC, or USDT pools, all-time volume, and trader count. `pool_address` is the token's main pool.
+- `--match exact` returns exact symbol or name matches, ranked the same way.
+- `--window` keeps tokens whose main pool started trading in that window; volume and trade counts are all-time.
+- Skills and `AGENTS.md` describe the new search order.
+
 ## 0.3.4
 
 - `dydt help` groups commands by task (Token Research, Charts & Pools, Trades, Discovery, Smart Money, Wallet Analysis) with short titles.
