@@ -1290,7 +1290,7 @@
                           "top_buy",
                           "top_sell",
                           "kol_buy",
-                          "tracked_buy",
+                          "watchlist_buy",
                           "self_buy",
                           "self_sell"
                         ],
@@ -1738,14 +1738,14 @@
                 },
                 "market_cap_quote": {
                   "type": "number",
-                  "description": "Market cap at the trade, in the quote asset."
+                  "description": "Market cap at the trade, in the quote asset: the trade's price × total supply at the trade."
                 },
                 "market_cap_usd": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "description": "Market cap at the trade, in USD."
+                  "description": "Market cap at the trade, in USD: the trade's price × total supply at the trade."
                 },
                 "labels": {
                   "type": "array",
@@ -1910,14 +1910,14 @@
                 },
                 "market_cap_quote": {
                   "type": "number",
-                  "description": "Market cap at the trade, in the quote asset."
+                  "description": "Market cap at the trade, in the quote asset: the trade's price × total supply at the trade."
                 },
                 "market_cap_usd": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "description": "Market cap at the trade, in USD."
+                  "description": "Market cap at the trade, in USD: the trade's price × total supply at the trade."
                 },
                 "labels": {
                   "type": "array",
@@ -4307,7 +4307,7 @@
                         "high_conviction",
                         "qualified"
                       ],
-                      "description": "Signal quality tier."
+                      "description": "high_conviction marks a Top signal, the highest-scoring alerts on pools past the bonding curve; qualified is every other alert."
                     },
                     "kind": {
                       "type": "string",
@@ -4346,7 +4346,7 @@
                     },
                     "fast_path": {
                       "type": "boolean",
-                      "description": "True when two or more tier A wallets bought within seconds."
+                      "description": "Set only on signals from the retired burst detector; always false now."
                     },
                     "alert_index": {
                       "type": "integer",
@@ -4393,27 +4393,27 @@
                     },
                     "entity_count": {
                       "type": "integer",
-                      "description": "Distinct buyer entities behind the signal."
+                      "description": "Distinct wallets that bought in the five minutes before the alert."
                     },
                     "tier_a_count": {
                       "type": "integer",
-                      "description": "Tier A wallets among them."
+                      "description": "Smart wallets among them: a third or more of their buys over the past week doubled within an hour."
                     },
                     "tier_b_count": {
                       "type": "integer",
-                      "description": "Tier B wallets among them."
+                      "description": "Wallets among them with a measured buy record that are not smart."
                     },
                     "tier_c_count": {
                       "type": "integer",
-                      "description": "Tier C wallets among them."
+                      "description": "Wallets among them without enough recent buys to measure."
                     },
                     "cohort_buy_usd": {
                       "type": "number",
-                      "description": "Combined buys by those entities."
+                      "description": "Combined buys by those wallets in the five minutes, in USD."
                     },
                     "buyer_burst": {
                       "type": "number",
-                      "description": "Unique buyers in the detection window relative to the 5-minute rate."
+                      "description": "Buys in the alert minute relative to the 15-minute average; 1 is normal."
                     },
                     "warnings": {
                       "type": "array",

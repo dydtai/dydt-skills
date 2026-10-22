@@ -55,7 +55,7 @@
           "Token Research"
         ],
         "summary": "Token Search",
-        "description": "Find tokens by name, symbol, or mint address.\n\nSymbols are not unique. Search by mint address, or use match=exact, when you need one specific token.",
+        "description": "Find tokens by name, symbol, or mint address. One result per token, with the real token ranked above copycats.\n\nrelevance ranks matches by real liquidity in SOL, USDC or USDT pools, all-time volume, and trader count. Copycats with thin pools, few traders, or glitched prices rank below the real token.\n\npool_address is the token's main pool: its strongest SOL, USDC or USDT pool.\n\nPools quoted in any other token count only toward trader count; their USD liquidity and volume are not trusted.\n\nSymbols are not unique. Search by mint address when you need one specific token.\n\nUSDC and USDT are not returned: they are only ever the quote side of a pool.",
         "parameters": [
           {
             "name": "q",
@@ -73,14 +73,14 @@
             "name": "match",
             "in": "query",
             "required": false,
-            "description": "smart ranks fuzzy matches; exact returns exact symbol or name matches only.",
+            "description": "smart returns exact symbol or name matches first, then names and symbols starting with the text, then ones containing it. exact returns exact symbol or name matches only.",
             "schema": {
               "type": "string",
               "enum": [
                 "smart",
                 "exact"
               ],
-              "description": "smart ranks fuzzy matches; exact returns exact symbol or name matches only.",
+              "description": "smart returns exact symbol or name matches first, then names and symbols starting with the text, then ones containing it. exact returns exact symbol or name matches only.",
               "default": "smart"
             }
           },
@@ -88,7 +88,7 @@
             "name": "window",
             "in": "query",
             "required": false,
-            "description": "Measure volume and trade counts over this window. Omit for all time.",
+            "description": "Only tokens whose main pool started trading within this window. Omit for all ages.",
             "schema": {
               "type": "string",
               "enum": [
@@ -99,7 +99,7 @@
                 "7d",
                 "30d"
               ],
-              "description": "Measure volume and trade counts over this window. Omit for all time."
+              "description": "Only tokens whose main pool started trading within this window. Omit for all ages."
             }
           },
           {
@@ -261,11 +261,11 @@
                           },
                           "volume_quote": {
                             "type": "number",
-                            "description": "Volume over the requested window, or all time without one."
+                            "description": "All-time volume in the quote asset."
                           },
                           "volume_usd": {
                             "type": "number",
-                            "description": "Volume in USD over the same period."
+                            "description": "All-time volume in USD."
                           },
                           "trader_count": {
                             "type": "integer",
@@ -273,11 +273,11 @@
                           },
                           "buy_count": {
                             "type": "integer",
-                            "description": "Buys over the same period as volume."
+                            "description": "All-time buys."
                           },
                           "sell_count": {
                             "type": "integer",
-                            "description": "Sells over the same period as volume."
+                            "description": "All-time sells."
                           },
                           "socials": {
                             "type": "object",
@@ -949,7 +949,7 @@
           "Token Research"
         ],
         "summary": "Token Top Holders",
-        "description": "Wallets holding the most of the token right now, largest first.\n\nlabel=kol or smart or vc or dev_team or bot or mayhem_bot or agent_buyback or rat needs the Pro or Scale plan.\n\nHoldings come from trades dydt indexed. Pool vaults and wallets that only received tokens by transfer are not listed.",
+        "description": "Wallets holding the most of the token right now, largest first.\n\nlabel=kol or smart or vc or dev_team or bot or mayhem_bot or agent_buyback or rat or pump_user or fomo_user needs the Pro or Scale plan.\n\nHoldings come from trades dydt indexed. Pool vaults and wallets that only received tokens by transfer are not listed.",
         "parameters": [
           {
             "name": "token_address",
@@ -977,7 +977,9 @@
                 "bot",
                 "mayhem_bot",
                 "agent_buyback",
-                "rat"
+                "rat",
+                "pump_user",
+                "fomo_user"
               ],
               "description": "Only holders with this label. Needs the Pro or Scale plan."
             }
@@ -1103,7 +1105,7 @@
                               "properties": {
                                 "label": {
                                   "type": "string",
-                                  "description": "Label, for example kol, smart, vc, dev_team, bot, or rat."
+                                  "description": "Label, for example kol, smart, vc, dev_team, bot, rat, pump_user, or fomo_user."
                                 },
                                 "name": {
                                   "type": [
@@ -1122,7 +1124,7 @@
                                 }
                               }
                             },
-                            "description": "Public labels on the wallet; empty for most wallets."
+                            "description": "Labels on the wallet. pump_user and fomo_user mark known pump.fun and fomo profiles without a linked X account; empty for unlabelled wallets."
                           }
                         }
                       }
@@ -3963,44 +3965,44 @@
             "name": "min_amount_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades worth at least this much, in USD.",
+            "description": "Only trades worth at least this much, in USD. Trades with no USD price count as 0.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades worth at least this much, in USD."
+              "description": "Only trades worth at least this much, in USD. Trades with no USD price count as 0."
             }
           },
           {
             "name": "max_amount_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades worth at most this much, in USD.",
+            "description": "Only trades worth at most this much, in USD. Trades with no USD price count as 0.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades worth at most this much, in USD."
+              "description": "Only trades worth at most this much, in USD. Trades with no USD price count as 0."
             }
           },
           {
             "name": "min_market_cap_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades made at a market cap of at least this much, in USD.",
+            "description": "Only trades made at a market cap of at least this much, in USD. Trades with no USD price are left out.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades made at a market cap of at least this much, in USD."
+              "description": "Only trades made at a market cap of at least this much, in USD. Trades with no USD price are left out."
             }
           },
           {
             "name": "max_market_cap_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades made at a market cap of at most this much, in USD.",
+            "description": "Only trades made at a market cap of at most this much, in USD. Trades with no USD price are left out.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades made at a market cap of at most this much, in USD."
+              "description": "Only trades made at a market cap of at most this much, in USD. Trades with no USD price are left out."
             }
           },
           {
@@ -4113,6 +4115,7 @@
                           "amount_sol",
                           "price_quote",
                           "price_usd",
+                          "total_supply",
                           "market_cap_quote",
                           "market_cap_usd",
                           "created_at"
@@ -4189,36 +4192,49 @@
                               "number",
                               "null"
                             ],
-                            "description": "Trade value in USD."
+                            "description": "Trade value in USD. Null when the quote asset has no USD price."
                           },
                           "amount_sol": {
                             "type": [
                               "number",
                               "null"
                             ],
-                            "description": "Trade value in SOL."
+                            "description": "Trade value in SOL. Null when the quote asset has no USD price."
                           },
                           "price_quote": {
-                            "type": "number",
-                            "description": "Execution price per token in the quote asset."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Execution price per token in the quote asset, fees included."
                           },
                           "price_usd": {
                             "type": [
                               "number",
                               "null"
                             ],
-                            "description": "Execution price per token in USD."
+                            "description": "Execution price per token in USD, fees included. Null when the quote asset has no USD price."
+                          },
+                          "total_supply": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Token total supply at the trade, in whole tokens."
                           },
                           "market_cap_quote": {
-                            "type": "number",
-                            "description": "Market cap at the trade, in the quote asset."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap at the trade, in the quote asset: price_quote × total_supply."
                           },
                           "market_cap_usd": {
                             "type": [
                               "number",
                               "null"
                             ],
-                            "description": "Market cap at the trade, in USD."
+                            "description": "Market cap at the trade, in USD: price_usd × total_supply. Null when price_usd is null."
                           },
                           "created_at": {
                             "type": "integer",
@@ -4267,7 +4283,7 @@
           "Trades"
         ],
         "summary": "Pool Trades",
-        "description": "Trades in one pool, including the bonding curve it migrated from. Newest first by default; order=asc walks forward from start_time.",
+        "description": "Trades in one pool, including the bonding curve it migrated from. Newest first by default; order=asc walks forward from start_time. token picks whose side each trade is described from.",
         "parameters": [
           {
             "name": "pool_address",
@@ -4328,44 +4344,44 @@
             "name": "min_amount_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades worth at least this much, in USD.",
+            "description": "Only trades worth at least this much, in USD. Trades with no USD price count as 0.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades worth at least this much, in USD."
+              "description": "Only trades worth at least this much, in USD. Trades with no USD price count as 0."
             }
           },
           {
             "name": "max_amount_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades worth at most this much, in USD.",
+            "description": "Only trades worth at most this much, in USD. Trades with no USD price count as 0.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades worth at most this much, in USD."
+              "description": "Only trades worth at most this much, in USD. Trades with no USD price count as 0."
             }
           },
           {
             "name": "min_market_cap_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades made at a market cap of at least this much, in USD.",
+            "description": "Only trades made at a market cap of at least this much, in USD. Trades with no USD price are left out.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades made at a market cap of at least this much, in USD."
+              "description": "Only trades made at a market cap of at least this much, in USD. Trades with no USD price are left out."
             }
           },
           {
             "name": "max_market_cap_usd",
             "in": "query",
             "required": false,
-            "description": "Only trades made at a market cap of at most this much, in USD.",
+            "description": "Only trades made at a market cap of at most this much, in USD. Trades with no USD price are left out.",
             "schema": {
               "type": "number",
               "minimum": 0,
-              "description": "Only trades made at a market cap of at most this much, in USD."
+              "description": "Only trades made at a market cap of at most this much, in USD. Trades with no USD price are left out."
             }
           },
           {
@@ -4430,6 +4446,17 @@
               "pattern": "^[A-Za-z0-9_-]+$",
               "description": "next_cursor from the previous page. Omit for the first page."
             }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "required": false,
+            "description": "One of the pool's two tokens. Trades are described from its side: buy or sell, amounts, price and market cap. Defaults to the pool's base token.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+              "description": "One of the pool's two tokens. Trades are described from its side: buy or sell, amounts, price and market cap. Defaults to the pool's base token."
+            }
           }
         ],
         "responses": {
@@ -4478,6 +4505,7 @@
                           "amount_sol",
                           "price_quote",
                           "price_usd",
+                          "total_supply",
                           "market_cap_quote",
                           "market_cap_usd",
                           "created_at"
@@ -4554,36 +4582,49 @@
                               "number",
                               "null"
                             ],
-                            "description": "Trade value in USD."
+                            "description": "Trade value in USD. Null when the quote asset has no USD price."
                           },
                           "amount_sol": {
                             "type": [
                               "number",
                               "null"
                             ],
-                            "description": "Trade value in SOL."
+                            "description": "Trade value in SOL. Null when the quote asset has no USD price."
                           },
                           "price_quote": {
-                            "type": "number",
-                            "description": "Execution price per token in the quote asset."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Execution price per token in the quote asset, fees included."
                           },
                           "price_usd": {
                             "type": [
                               "number",
                               "null"
                             ],
-                            "description": "Execution price per token in USD."
+                            "description": "Execution price per token in USD, fees included. Null when the quote asset has no USD price."
+                          },
+                          "total_supply": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Token total supply at the trade, in whole tokens."
                           },
                           "market_cap_quote": {
-                            "type": "number",
-                            "description": "Market cap at the trade, in the quote asset."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap at the trade, in the quote asset: price_quote × total_supply."
                           },
                           "market_cap_usd": {
                             "type": [
                               "number",
                               "null"
                             ],
-                            "description": "Market cap at the trade, in USD."
+                            "description": "Market cap at the trade, in USD: price_usd × total_supply. Null when price_usd is null."
                           },
                           "created_at": {
                             "type": "integer",
@@ -5904,11 +5945,11 @@
             "name": "min_entity_count",
             "in": "query",
             "required": false,
-            "description": "Only signals backed by at least this many buyer entities.",
+            "description": "Only signals with at least this many distinct buyers in the five minutes before the alert.",
             "schema": {
               "type": "integer",
               "minimum": 0,
-              "description": "Only signals backed by at least this many buyer entities."
+              "description": "Only signals with at least this many distinct buyers in the five minutes before the alert."
             }
           },
           {
@@ -6119,7 +6160,7 @@
                               "high_conviction",
                               "qualified"
                             ],
-                            "description": "Signal quality tier."
+                            "description": "high_conviction marks a Top signal, the highest-scoring alerts on pools past the bonding curve; qualified is every other alert."
                           },
                           "kind": {
                             "type": "string",
@@ -6158,7 +6199,7 @@
                           },
                           "fast_path": {
                             "type": "boolean",
-                            "description": "True when two or more tier A wallets bought within seconds of each other."
+                            "description": "Set only on signals from the retired burst detector; always false now."
                           },
                           "alert_index": {
                             "type": "integer",
@@ -6311,27 +6352,27 @@
                           },
                           "entity_count": {
                             "type": "integer",
-                            "description": "Distinct buyer entities behind the signal."
+                            "description": "Distinct wallets that bought in the five minutes before the alert."
                           },
                           "tier_a_count": {
                             "type": "integer",
-                            "description": "Tier A wallets among them."
+                            "description": "Smart wallets among them: a third or more of their buys over the past week doubled within an hour."
                           },
                           "tier_b_count": {
                             "type": "integer",
-                            "description": "Tier B wallets among them."
+                            "description": "Wallets among them with a measured buy record that are not smart."
                           },
                           "tier_c_count": {
                             "type": "integer",
-                            "description": "Tier C wallets among them."
+                            "description": "Wallets among them without enough recent buys to measure."
                           },
                           "cohort_buy_usd": {
                             "type": "number",
-                            "description": "Combined buys by those entities."
+                            "description": "Combined buys by those wallets in the five minutes, in USD."
                           },
                           "buyer_burst": {
                             "type": "number",
-                            "description": "Unique buyers in the 10-second detection window relative to the 5-minute buyer rate; 1 is normal."
+                            "description": "Buys in the alert minute relative to the 15-minute average; 1 is normal."
                           },
                           "warnings": {
                             "type": "array",
@@ -6415,7 +6456,9 @@
                 "bot",
                 "mayhem_bot",
                 "agent_buyback",
-                "rat"
+                "rat",
+                "pump_user",
+                "fomo_user"
               ],
               "description": "Wallet label."
             }
@@ -6495,7 +6538,7 @@
                               "properties": {
                                 "label": {
                                   "type": "string",
-                                  "description": "Label, for example kol, smart, vc, dev_team, bot, or rat."
+                                  "description": "Label, for example kol, smart, vc, dev_team, bot, rat, pump_user, or fomo_user."
                                 },
                                 "name": {
                                   "type": [
@@ -6514,7 +6557,7 @@
                                 }
                               }
                             },
-                            "description": "Public labels on the wallet; empty for most wallets."
+                            "description": "Labels on the wallet. pump_user and fomo_user mark known pump.fun and fomo profiles without a linked X account; empty for unlabelled wallets."
                           }
                         }
                       }
@@ -6848,7 +6891,7 @@
                               "properties": {
                                 "label": {
                                   "type": "string",
-                                  "description": "Label, for example kol, smart, vc, dev_team, bot, or rat."
+                                  "description": "Label, for example kol, smart, vc, dev_team, bot, rat, pump_user, or fomo_user."
                                 },
                                 "name": {
                                   "type": [
@@ -6867,7 +6910,7 @@
                                 }
                               }
                             },
-                            "description": "Public labels on the wallet; empty for most wallets."
+                            "description": "Labels on the wallet. pump_user and fomo_user mark known pump.fun and fomo profiles without a linked X account; empty for unlabelled wallets."
                           },
                           "recent_trades": {
                             "type": "array",
@@ -7173,6 +7216,9 @@
                           "token_amount",
                           "amount_sol",
                           "amount_usd",
+                          "price_quote",
+                          "price_usd",
+                          "total_supply",
                           "market_cap_quote",
                           "market_cap_usd",
                           "realized_pnl_sol",
@@ -7251,13 +7297,40 @@
                             "type": "number",
                             "description": "Trade size in USD."
                           },
+                          "price_quote": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Execution price per token in the quote asset, fees included."
+                          },
+                          "price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Execution price per token in USD, fees included."
+                          },
+                          "total_supply": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Token total supply at the trade, in whole tokens."
+                          },
                           "market_cap_quote": {
-                            "type": "number",
-                            "description": "Market cap at the trade, in the quote asset."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap at the trade, in the quote asset: price_quote × total_supply."
                           },
                           "market_cap_usd": {
-                            "type": "number",
-                            "description": "Market cap at the trade, in USD."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap at the trade, in USD: price_usd × total_supply."
                           },
                           "realized_pnl_sol": {
                             "type": "number",
@@ -7342,7 +7415,7 @@
                               "properties": {
                                 "label": {
                                   "type": "string",
-                                  "description": "Label, for example kol, smart, vc, dev_team, bot, or rat."
+                                  "description": "Label, for example kol, smart, vc, dev_team, bot, rat, pump_user, or fomo_user."
                                 },
                                 "name": {
                                   "type": [
@@ -7361,7 +7434,7 @@
                                 }
                               }
                             },
-                            "description": "Public labels on the wallet; empty for most wallets."
+                            "description": "Labels on the wallet. pump_user and fomo_user mark known pump.fun and fomo profiles without a linked X account; empty for unlabelled wallets."
                           }
                         }
                       }
@@ -8227,7 +8300,7 @@
                             "properties": {
                               "label": {
                                 "type": "string",
-                                "description": "Label, for example kol, smart, vc, dev_team, bot, or rat."
+                                "description": "Label, for example kol, smart, vc, dev_team, bot, rat, pump_user, or fomo_user."
                               },
                               "name": {
                                 "type": [
@@ -8246,7 +8319,7 @@
                               }
                             }
                           },
-                          "description": "Public labels on the wallet; empty for most wallets."
+                          "description": "Labels on the wallet. pump_user and fomo_user mark known pump.fun and fomo profiles without a linked X account; empty for unlabelled wallets."
                         },
                         "insights": {
                           "type": "object",
@@ -8965,6 +9038,9 @@
                           "token_amount",
                           "amount_sol",
                           "amount_usd",
+                          "price_quote",
+                          "price_usd",
+                          "total_supply",
                           "market_cap_quote",
                           "market_cap_usd",
                           "realized_pnl_sol",
@@ -9041,13 +9117,40 @@
                             "type": "number",
                             "description": "Trade size in USD."
                           },
+                          "price_quote": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Execution price per token in the quote asset, fees included."
+                          },
+                          "price_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Execution price per token in USD, fees included."
+                          },
+                          "total_supply": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Token total supply at the trade, in whole tokens."
+                          },
                           "market_cap_quote": {
-                            "type": "number",
-                            "description": "Market cap at the trade, in the quote asset."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap at the trade, in the quote asset: price_quote × total_supply."
                           },
                           "market_cap_usd": {
-                            "type": "number",
-                            "description": "Market cap at the trade, in USD."
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Market cap at the trade, in USD: price_usd × total_supply."
                           },
                           "realized_pnl_sol": {
                             "type": "number",
@@ -10235,6 +10338,7 @@
               "NOT_OWNED",
               "ELEVATION_REQUIRED",
               "PLAN_REQUIRED",
+              "BALANCE_REQUIRED",
               "NOT_FOUND",
               "NO_ACTIVE_WALLET",
               "CONFLICT",
