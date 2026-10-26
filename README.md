@@ -121,6 +121,7 @@ Start on Free. If you ask for something your plan does not include, your agent t
 - **Read-only.** There is no command that trades, transfers, or signs. dydt never asks for a seed phrase or private key; anyone who does is trying to steal from you.
 - **Your key stays with you.** It is stored on your computer (file mode 600) and sent only to dydt.
 - **Pinned hosts.** Requests go only to `data.dydt.ai`.
+- **Verifiable builds.** Every npm release is published from this repository by GitHub Actions with [npm provenance](https://docs.npmjs.com/generating-provenance-statements), so the npm page links to the exact commit and build.
 - **Protected from tricks in token names.** Anyone can write a token's name and description. The CLI strips hidden characters and replaces instruction-like text with `[filtered]` before your agent reads it.
 - **Not financial advice.** Answers report what dydt observed on chain. Labels and signals can be wrong, and memecoins are high risk.
 
@@ -326,6 +327,8 @@ npm test           # builds, then runs the CLI and skill consistency tests
 npm run sync-spec  # refresh spec/openapi.json and spec/asyncapi.json from dydt.ai
 npm run sync-rules # copy scripts/shared-rules.md into every skill
 ```
+
+To release, bump `version` in `package.json`, commit, then push a matching tag (`git tag v0.3.6 && git push origin v0.3.6`). The Publish workflow tests and publishes to npm with provenance.
 
 The README images are rendered from `static/source/*.html` at 2x. Update the HTML when commands change, then re-render the matching PNG in `static/`.
 

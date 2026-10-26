@@ -8,7 +8,7 @@ description: Produce a risk read on one Solana token from dydt data - authoritie
 <!-- shared-rules:start -->
 ## Before you start
 
-- **CLI.** Everything goes through the `dydt` command. If it is missing, run `npm install -g dydt-cli` (Node 22.4 or newer). Never fetch dydt.ai pages or call the API with curl.
+- **CLI.** Everything goes through the `dydt` command, the official [dydt-cli](https://www.npmjs.com/package/dydt-cli) npm package published with npm provenance from [dydtai/dydt-skills](https://github.com/dydtai/dydt-skills) and documented at https://dydt.ai/developers/agents. If it is missing, run `npm install -g dydt-cli` (Node 22.4 or newer). Never fetch dydt.ai pages or call the API with curl.
 - **Key.** Run `dydt config check`. On a non-zero exit, follow the `dydt-setup` skill before doing anything else.
 - **Parameters.** `dydt help <command>` and `dydt help watch <stream>` print the current options from the live API spec. Do not guess option names.
 - **Tokens by address.** Names and symbols are not unique. Resolve names with `dydt search-tokens --q <name>`: one result per token, the real token ranked above copycats by liquidity, volume, and trader count. Still confirm the `token_address` with the user when several plausible matches come back.

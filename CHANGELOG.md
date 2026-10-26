@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.6
+
+- Releases are published from GitHub Actions with npm provenance, so the npm page links to the exact commit and build.
+- Skills name the official `dydt-cli` package, the `dydtai/dydt-skills` repository, and the setup guide at https://dydt.ai/developers/agents.
+
 ## 0.3.5
 
 - `dydt search-tokens` returns one result per token, and the real token ranks above copycats: results are ordered by real liquidity in SOL, USDC, or USDT pools, all-time volume, and trader count. `pool_address` is the token's main pool.
